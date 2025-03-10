@@ -8,7 +8,7 @@ import {
   DialogClose,
 } from "@radix-ui/react-dialog";
 import { Button } from "@mui/material";
-import { cn } from "@/lib/utils";
+import { cn } from "src/lib/utils";
 
 // Drawer Component (Radix Dialog acting as a side drawer)
 const Drawer = ({ ...props }: React.ComponentProps<typeof Dialog>) => (
