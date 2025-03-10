@@ -2,7 +2,7 @@ import * as React from "react";
 import * as ToastPrimitives from "@radix-ui/react-toast";
 import { cva, type VariantProps } from "class-variance-authority";
 import { X } from "lucide-react";
-import { cn } from "src/lib/utils"; // Ensure `cn` is defined in src/lib/utils.ts
+import { cn } from "src/lib/utils";
 
 // Renaming the custom ToastProvider to avoid conflict
 const CustomToastProvider = ({ children }: { children: React.ReactNode }) => {
@@ -22,6 +22,25 @@ const CustomToastProvider = ({ children }: { children: React.ReactNode }) => {
       {children}
     </ToastPrimitives.Provider>
   );
+};
+
+// Create a custom hook for toasts
+export const useToast = () => {
+  const [toasts, setToasts] = React.useState<string[]>([]);
+
+  const showToast = (message: string) => {
+    setToasts((prevToasts) => [...prevToasts, message]);
+  };
+
+  const dismissToast = (index: number) => {
+    setToasts((prevToasts) => prevToasts.filter((_, i) => i !== index));
+  };
+
+  return {
+    toasts,
+    showToast,
+    dismissToast,
+  };
 };
 
 // ToastViewport for positioning the toast notifications
@@ -84,10 +103,8 @@ const ToastClose = React.forwardRef<
   <ToastPrimitives.Close
     ref={ref}
     className={cn(
-      "absolute right-2 top-2 rounded-md p-1 text-foreground/50 opacity-0 transition-opacity hover:text-foreground focus:opacity-100 focus:outline-none focus:ring-2 group-hover:opacity-100",
-      className
+      "absolute right-4 top-4 z-10 cursor-pointer rounded-md bg-transparent p-2 text-foreground opacity-80 hover:opacity-100 focus:outline-none"
     )}
-    aria-label="Close"
     {...props}
   >
     <X className="h-4 w-4" />
@@ -95,4 +112,5 @@ const ToastClose = React.forwardRef<
 ));
 ToastClose.displayName = ToastPrimitives.Close.displayName;
 
-export { CustomToastProvider, Toast, ToastViewport };
+// Export everything properly
+export { CustomToastProvider, Toast, ToastViewport, useToast };
