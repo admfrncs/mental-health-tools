@@ -13,20 +13,22 @@ export default function Home() {
     <div className="min-h-screen bg-gradient-to-b from-background to-muted p-4">
       <div className="max-w-4xl mx-auto pt-16 text-center">
         
-        {/* ✅ Logo Added Here */}
+        {/* Logo Section */}
         <Image 
           src="/mhtoolslogo.png" 
           alt="Mental Health Tool Shop Logo" 
-          width={150} 
-          height={150} 
-          className="mx-auto mb-6" // Centers the logo
+          width={300} // Doubled size 
+          height={300} 
+          className="mx-auto mb-6" // Center logo and add spacing below
           priority 
         />
 
+        {/* Title */}
         <h1 className="text-4xl md:text-6xl font-bold text-center mb-8 bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent">
           Mental Health Tool Shop
         </h1>
 
+        {/* Cards Section */}
         <div className="grid md:grid-cols-2 gap-6 mt-12">
           {/* Mood Tracker Card */}
           <Card className="p-6">
