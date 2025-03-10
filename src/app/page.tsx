@@ -1,6 +1,7 @@
 "use client"; // Required for Client Component behavior
 
 import { useRouter } from "next/navigation"; // Next.js router
+import Image from "next/image"; // Import Next.js Image component
 import { Button } from "src/components/ui/button";
 import { Card, CardContent } from "src/components/ui/card";
 import { Activity, Brain } from "lucide-react";
@@ -10,7 +11,18 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-muted p-4">
-      <div className="max-w-4xl mx-auto pt-16">
+      <div className="max-w-4xl mx-auto pt-16 text-center">
+        
+        {/* ✅ Logo Added Here */}
+        <Image 
+          src="/mhtoolslogo.png" 
+          alt="Mental Health Tool Shop Logo" 
+          width={150} 
+          height={150} 
+          className="mx-auto mb-6" // Centers the logo
+          priority 
+        />
+
         <h1 className="text-4xl md:text-6xl font-bold text-center mb-8 bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent">
           Mental Health Tool Shop
         </h1>
