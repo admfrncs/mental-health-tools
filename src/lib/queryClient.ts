@@ -6,8 +6,8 @@ const throwIfResNotOk = async (res: Response): Promise<void> => {
   if (!res.ok) {
     const text = (await res.text()) || res.statusText;
 
-    // Only log the error in the client-side environment
-    if (typeof window !== 'undefined') {
+    // Only log the error if console is available (client-side)
+    if (typeof window !== 'undefined' && console) {
       console.error(`HTTP Error: ${res.status} - ${text}`); // Log the error for debugging
     }
 
@@ -37,7 +37,7 @@ export const apiRequest = async (
     return await res.json();
   } catch (error: any) {
     // Log the error for debugging
-    if (typeof window !== 'undefined') {
+    if (typeof window !== 'undefined' && console) {
       console.error("Error in API request:", error);
     }
 
@@ -73,7 +73,7 @@ export const getQueryFn =
       // Return the parsed JSON response if the request is successful
       return res.json();
     } catch (error: any) {
-      if (typeof window !== 'undefined') {
+      if (typeof window !== 'undefined' && console) {
         console.error("Error in query function:", error);
       }
 
