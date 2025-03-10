@@ -192,7 +192,7 @@ ${selectedSymptoms
           </Accordion>
 
           <Button
-            className="mt-8 w-full"
+            className="mt-8 w-full bg-blue-500 text-white hover:bg-blue-600 disabled:bg-gray-300"
             onClick={handleFinish}
             disabled={selectedSymptoms.length === 0}
           >
