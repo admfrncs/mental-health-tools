@@ -5,7 +5,12 @@ import { toast } from 'react-toastify';  // Ensure react-toastify is installed f
 const throwIfResNotOk = async (res: Response): Promise<void> => {
   if (!res.ok) {
     const text = (await res.text()) || res.statusText;
-    console.error(`HTTP Error: ${res.status} - ${text}`); // Log the error for debugging
+
+    // Only log the error in the client-side environment
+    if (typeof window !== 'undefined') {
+      console.error(`HTTP Error: ${res.status} - ${text}`); // Log the error for debugging
+    }
+
     throw new Error(`${res.status}: ${text}`);
   }
 };
@@ -32,7 +37,9 @@ export const apiRequest = async (
     return await res.json();
   } catch (error: any) {
     // Log the error for debugging
-    console.error("Error in API request:", error);
+    if (typeof window !== 'undefined') {
+      console.error("Error in API request:", error);
+    }
 
     // Show a toast notification to inform the user
     toast.error(`Request failed: ${error.message || 'Unknown error'}`);
@@ -66,7 +73,9 @@ export const getQueryFn =
       // Return the parsed JSON response if the request is successful
       return res.json();
     } catch (error: any) {
-      console.error("Error in query function:", error);
+      if (typeof window !== 'undefined') {
+        console.error("Error in query function:", error);
+      }
 
       // Handle error according to your app's needs
       if (error instanceof Error) {
