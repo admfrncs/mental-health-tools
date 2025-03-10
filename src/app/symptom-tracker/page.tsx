@@ -86,7 +86,7 @@ ${selectedSymptoms
     // Save the selected symptoms
     saveMutation.mutate(selectedSymptoms, {
       onSuccess: () => {
-        setShowResults(true);
+        setShowResults(true);  // Show results after successful save
       },
       onError: (error) => {
         toast.error("An error occurred while saving the assessment.");
@@ -94,6 +94,7 @@ ${selectedSymptoms
     });
   };
 
+  // Display results when showResults is true
   if (showResults) {
     return (
       <div className="min-h-screen bg-gradient-to-b from-background to-muted p-4">
@@ -134,6 +135,7 @@ ${selectedSymptoms
     );
   }
 
+  // Display symptom tracker form when results are not shown
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-muted p-4">
       <Card className="max-w-2xl mx-auto mt-8">
