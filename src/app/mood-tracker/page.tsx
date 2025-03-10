@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useRouter } from "next/router"; // Fixed import for Next.js router
+import { useRouter } from "next/navigation"; // Fixed import for App Router
 import { Button } from "src/components/ui/button";
 import { Card, CardContent } from "src/components/ui/card";
 import { sections, sectionDisplayNames, questions, getScoreRating } from "src/lib/questions";
@@ -17,7 +17,7 @@ import { Calendar } from "src/components/ui/calendar";
 import { CalendarIcon } from "lucide-react";
 
 export default function MoodTracker() {
-  const router = useRouter();
+  const router = useRouter(); // Correctly using useRouter from next/navigation
   const { toast } = useToast();
   const [date, setDate] = useState<string>(format(new Date(), "PPP"));
   const [currentQuestion, setCurrentQuestion] = useState(0);
