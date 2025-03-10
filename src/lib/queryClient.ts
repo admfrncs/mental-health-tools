@@ -5,6 +5,7 @@ import { toast } from 'react-toastify';  // Ensure react-toastify is installed f
 const throwIfResNotOk = async (res: Response): Promise<void> => {
   if (!res.ok) {
     const text = (await res.text()) || res.statusText;
+    console.error(`HTTP Error: ${res.status} - ${text}`); // Log the error for debugging
     throw new Error(`${res.status}: ${text}`);
   }
 };
