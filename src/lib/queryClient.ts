@@ -2,7 +2,7 @@ import { QueryClient, QueryFunction } from "@tanstack/react-query";
 import { toast } from 'react-toastify';  // Ensure react-toastify is installed for error notifications
 
 // Utility function to throw an error if the response is not OK
-const throwIfResNotOk = async (res: Response): Promise<void> => {
+const throwIfResNotOk = async (res: Response | null | undefined): Promise<void> => {
   if (!res) {
     console.error("Response is undefined or null.");
     throw new Error("No response received.");
@@ -19,6 +19,7 @@ const throwIfResNotOk = async (res: Response): Promise<void> => {
     throw new Error(`${res.status}: ${text}`);
   }
 };
+
 
 // Function to handle API requests
 export const apiRequest = async (
