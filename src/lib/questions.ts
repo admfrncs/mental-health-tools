@@ -86,5 +86,71 @@ export const questions: Question[] = [
       { text: "Often", score: 4 },
       { text: "Constantly", score: 5 }
     ]
+  },
+  {
+    section: 2,
+    text: "How often do you experience physical symptoms (e.g., headaches, dizziness)?",
+    options: [
+      { text: "Never", score: 1 },
+      { text: "Rarely", score: 2 },
+      { text: "Sometimes", score: 3 },
+      { text: "Often", score: 4 },
+      { text: "Constantly", score: 5 }
+    ]
+  },
+  {
+    section: 2,
+    text: "How would you rate your level of discomfort from physical symptoms?",
+    options: [
+      { text: "None", score: 1 },
+      { text: "Mild", score: 2 },
+      { text: "Moderate", score: 3 },
+      { text: "Severe", score: 4 },
+      { text: "Extreme", score: 5 }
+    ]
+  },
+  {
+    section: 3,
+    text: "How would you rate your quality of sleep?",
+    options: [
+      { text: "Excellent", score: 1 },
+      { text: "Good", score: 2 },
+      { text: "Fair", score: 3 },
+      { text: "Poor", score: 4 },
+      { text: "Very Poor", score: 5 }
+    ]
+  },
+  {
+    section: 3,
+    text: "How frequently do you experience nightmares?",
+    options: [
+      { text: "Never", score: 1 },
+      { text: "Rarely", score: 2 },
+      { text: "Sometimes", score: 3 },
+      { text: "Often", score: 4 },
+      { text: "Constantly", score: 5 }
+    ]
+  },
+  {
+    section: 4,
+    text: "How often do you experience social withdrawal?",
+    options: [
+      { text: "Never", score: 1 },
+      { text: "Rarely", score: 2 },
+      { text: "Sometimes", score: 3 },
+      { text: "Often", score: 4 },
+      { text: "Constantly", score: 5 }
+    ]
+  },
+  {
+    section: 4,
+    text: "How would you rate your level of engagement in daily activities?",
+    options: [
+      { text: "Very Engaged", score: 1 },
+      { text: "Somewhat Engaged", score: 2 },
+      { text: "Neutral", score: 3 },
+      { text: "Somewhat Disengaged", score: 4 },
+      { text: "Very Disengaged", score: 5 }
+    ]
   }
 ];
