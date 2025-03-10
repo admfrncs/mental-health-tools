@@ -154,3 +154,7 @@ export const questions: Question[] = [
     ]
   }
 ];
+
+export const getScoreRating = () => {
+  // Your implementation here
+};
