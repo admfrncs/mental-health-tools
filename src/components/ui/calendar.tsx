@@ -2,8 +2,8 @@ import * as React from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { DayPicker } from "react-day-picker";
 
-import { cn } from "@/lib/utils";
-import { buttonVariants } from "@/components/ui/button";
+import { cn } from "src/lib/utils"; // Corrected import path based on your alias
+import { buttonVariants } from "src/components/ui/button"; // Corrected import path based on your alias
 
 export type CalendarProps = React.ComponentProps<typeof DayPicker>;
 
