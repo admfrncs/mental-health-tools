@@ -11,6 +11,8 @@ import { symptomCategories, severityLevels } from "src/lib/symptoms";
 import { useToast } from "src/components/ui/toast";
 import { useMutation } from "@tanstack/react-query";
 import { apiRequest } from "src/lib/queryClient";
+import { toast } from 'react-toastify';
+
 
 type SelectedSymptom = {
   category: string;
