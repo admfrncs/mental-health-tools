@@ -25,8 +25,8 @@ export default function Home() {
                 Track your emotional well-being through a comprehensive assessment.
               </p>
               <Button 
-                className="w-full bg-primary hover:bg-primary/90" 
-                onClick={() => router.push("/mood-tracker")} // Next.js navigation
+                className="w-full bg-green-500 hover:bg-green-600 text-black" 
+                onClick={() => router.push("/mood-tracker")}
               >
                 Start Mood Assessment
               </Button>
