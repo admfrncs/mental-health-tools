@@ -1,3 +1,5 @@
+'use client'; // Add this directive to mark the file as a client component
+
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation"; // Fixed import for App Router
 import { Button } from "src/components/ui/button";
@@ -17,7 +19,7 @@ import { Calendar } from "src/components/ui/calendar";
 import { CalendarIcon } from "lucide-react";
 
 export default function MoodTracker() {
-  const router = useRouter(); // Correctly using useRouter from next/navigation
+  const router = useRouter();
   const { toast } = useToast();
   const [date, setDate] = useState<string>(format(new Date(), "PPP"));
   const [currentQuestion, setCurrentQuestion] = useState(0);
