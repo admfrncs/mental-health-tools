@@ -1,5 +1,6 @@
+"use client";  // Add this line at the top
+
 import { useState } from "react";
-// Change this import to next/navigation
 import { useRouter } from "next/navigation"; // Correct import for Next.js App Router
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "src/components/ui/accordion";
 import { Button } from "src/components/ui/button";
