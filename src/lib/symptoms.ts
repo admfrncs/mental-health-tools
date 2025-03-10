@@ -109,10 +109,6 @@ export const symptomCategories = [
       "Using substances despite negative consequences"
     ]
   }
-];
+] as const;
 
-export const severityLevels = [
-  "Mild",
-  "Moderate",
-  "Severe"
-];
+export const severityLevels = ["Mild", "Moderate", "Severe"] as const;
