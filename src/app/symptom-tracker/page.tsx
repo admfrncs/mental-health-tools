@@ -54,18 +54,15 @@ const SymptomTracker = () => {
     );
   };
 
-const handleFinish = async () => {
-  console.log("Completing assessment", selectedSymptoms); // Debugging line
-  try {
-    await saveMutation.mutateAsync({
-      date: new Date(),
-      symptoms: selectedSymptoms,
-    });
-    setShowResults(true); // Ensure this is being called
-  } catch (error) {
-    toast.error("Failed to save assessment");
-  }
-};
+const saveMutation = useMutation({
+  mutationFn: async (data: any) => {
+    console.log("Sending data:", data);  // Debugging line
+    const response = await apiRequest("POST", "/api/symptom-assessments", data);
+    console.log("Response from server:", response); // Debugging line
+    return response;
+  },
+});
+
 
 
   const exportToWord = () => {
