@@ -8,7 +8,7 @@ import { Card, CardContent } from "src/components/ui/card";
 import { Checkbox } from "src/components/ui/checkbox";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "src/components/ui/select";
 import { symptomCategories, severityLevels } from "src/lib/symptoms";
-import { useToast } from "src/components/ui/use-toast";
+import { useToast } from "src/components/ui/toast";
 import { useMutation } from "@tanstack/react-query";
 import { apiRequest } from "src/lib/queryClient";
 
