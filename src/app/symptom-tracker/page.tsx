@@ -8,10 +8,9 @@ import { Card, CardContent } from "src/components/ui/card";
 import { Checkbox } from "src/components/ui/checkbox";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "src/components/ui/select";
 import { symptomCategories, severityLevels } from "src/lib/symptoms";
-import { useToast } from "src/components/ui/toast";
+import { toast } from 'react-toastify';  // Correct import for react-toastify
 import { useMutation } from "@tanstack/react-query";
 import { apiRequest } from "src/lib/queryClient";
-import { toast } from 'react-toastify';
 
 
 type SelectedSymptom = {
@@ -22,7 +21,6 @@ type SelectedSymptom = {
 
 const SymptomTracker = () => {
   const router = useRouter(); // Using useRouter from next/navigation
-  const { toast } = useToast();
   const [selectedSymptoms, setSelectedSymptoms] = useState<SelectedSymptom[]>([]);
   const [showResults, setShowResults] = useState(false);
 
@@ -64,11 +62,7 @@ const SymptomTracker = () => {
 
       setShowResults(true);
     } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to save assessment",
-        variant: "destructive",
-      });
+      toast.error("Failed to save assessment");  // Correct usage of toast
     }
   };
 
@@ -206,4 +200,3 @@ ${selectedSymptoms
 };
 
 export default SymptomTracker;
-
