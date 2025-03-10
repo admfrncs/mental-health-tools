@@ -1,4 +1,4 @@
-"use client";  // Add this line at the top
+"use client"; // Add this line at the top
 
 import { useState } from "react";
 import { useRouter } from "next/navigation"; // Correct import for Next.js App Router
@@ -11,7 +11,6 @@ import { symptomCategories, severityLevels } from "src/lib/symptoms";
 import { toast } from 'react-toastify';  // Correct import for react-toastify
 import { useMutation } from "@tanstack/react-query";
 import { apiRequest } from "src/lib/queryClient";
-
 
 type SelectedSymptom = {
   category: string;
@@ -54,8 +53,6 @@ const SymptomTracker = () => {
     );
   };
 
-
-
   const exportToWord = () => {
     const content = `
 Mental Health Symptom Assessment
@@ -77,6 +74,24 @@ ${selectedSymptoms
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+  };
+
+  // Define the handleFinish function
+  const handleFinish = () => {
+    if (selectedSymptoms.length === 0) {
+      toast.error("Please select at least one symptom before completing the assessment.");
+      return;
+    }
+
+    // Save the selected symptoms
+    saveMutation.mutate(selectedSymptoms, {
+      onSuccess: () => {
+        setShowResults(true);
+      },
+      onError: (error) => {
+        toast.error("An error occurred while saving the assessment.");
+      },
+    });
   };
 
   if (showResults) {
