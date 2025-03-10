@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { useRouter } from "next/router"; // Updated to use Next.js' useRouter
+// Change this import to next/navigation
+import { useRouter } from "next/navigation"; // Correct import for Next.js App Router
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "src/components/ui/accordion";
 import { Button } from "src/components/ui/button";
 import { Card, CardContent } from "src/components/ui/card";
@@ -17,7 +18,7 @@ type SelectedSymptom = {
 };
 
 const SymptomTracker = () => {
-  const router = useRouter(); // Hook from Next.js App Router
+  const router = useRouter(); // Using useRouter from next/navigation
   const { toast } = useToast();
   const [selectedSymptoms, setSelectedSymptoms] = useState<SelectedSymptom[]>([]);
   const [showResults, setShowResults] = useState(false);
