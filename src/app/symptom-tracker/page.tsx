@@ -1,4 +1,4 @@
-"use client"; // Add this line at the top
+"use client";  // Add this line at the top
 
 import { useState } from "react";
 import { useRouter } from "next/navigation"; // Correct import for Next.js App Router
@@ -12,6 +12,7 @@ import { toast } from 'react-toastify';  // Correct import for react-toastify
 import { useMutation } from "@tanstack/react-query";
 import { apiRequest } from "src/lib/queryClient";
 
+
 type SelectedSymptom = {
   category: string;
   symptom: string;
@@ -21,15 +22,12 @@ type SelectedSymptom = {
 const SymptomTracker = () => {
   const router = useRouter(); // Using useRouter from next/navigation
   const [selectedSymptoms, setSelectedSymptoms] = useState<SelectedSymptom[]>([]);
-  const [showResults, setShowResults] = useState(false); // Added state to show results when the assessment is complete
+  const [showResults, setShowResults] = useState(false);
 
-  // Keep only one saveMutation definition
   const saveMutation = useMutation({
     mutationFn: async (data: any) => {
-      console.log("Sending data:", data);  // Debugging line
-      const response = await apiRequest("POST", "/api/symptom-assessments", data);
-      console.log("Response from server:", response); // Debugging line
-      return response;
+      console.log("Saving data:", data);  // Debugging line
+      return await apiRequest("POST", "/api/symptom-assessments", data);
     },
   });
 
@@ -56,20 +54,29 @@ const SymptomTracker = () => {
     );
   };
 
-  // Handle "Complete Assessment" button click
-  const handleFinish = async () => {
-    try {
-      const response = await saveMutation.mutateAsync({
-        date: new Date(),
-        symptoms: selectedSymptoms,
-      });
 
-      console.log("Assessment saved successfully:", response);
-      setShowResults(true); // Show results after saving
-    } catch (error) {
-      console.error("Error saving assessment:", error);
-      toast.error("Failed to complete assessment");
-    }
+
+  const exportToWord = () => {
+    const content = `
+Mental Health Symptom Assessment
+Date: ${new Date().toLocaleDateString()}
+
+Selected Symptoms:
+${selectedSymptoms
+  .map(
+    (s) => `${s.category}\n  - ${s.symptom} (Severity: ${s.severity})`
+  )
+  .join("\n")}
+    `;
+
+    const blob = new Blob([content], { type: "application/msword" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = "symptom-assessment.doc";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   };
 
   if (showResults) {
