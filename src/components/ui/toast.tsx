@@ -2,11 +2,29 @@ import * as React from "react";
 import * as ToastPrimitives from "@radix-ui/react-toast";
 import { cva, type VariantProps } from "class-variance-authority";
 import { X } from "lucide-react";
-import { cn } from "src/lib/utils"; // Make sure `cn` utility is correctly defined in src/lib/utils.ts
+import { cn } from "src/lib/utils"; // Ensure `cn` is defined in src/lib/utils.ts
 
-// ToastProvider and ToastViewport for wrapping the app and positioning the toast notifications
-const ToastProvider = ToastPrimitives.Provider;
+// Renaming the custom ToastProvider to avoid conflict
+const CustomToastProvider = ({ children }: { children: React.ReactNode }) => {
+  const [toasts, setToasts] = React.useState<string[]>([]);
 
+  const showToast = (message: string) => {
+    setToasts((prevToasts) => [...prevToasts, message]);
+  };
+
+  return (
+    <ToastPrimitives.Provider>
+      <ToastPrimitives.Viewport>
+        {toasts.map((message, index) => (
+          <Toast key={index} message={message} />
+        ))}
+      </ToastPrimitives.Viewport>
+      {children}
+    </ToastPrimitives.Provider>
+  );
+};
+
+// ToastViewport for positioning the toast notifications
 const ToastViewport = React.forwardRef<
   React.ElementRef<typeof ToastPrimitives.Viewport>,
   React.ComponentPropsWithoutRef<typeof ToastPrimitives.Viewport>
@@ -39,37 +57,24 @@ const toastVariants = cva(
   }
 );
 
-// Toast component with the variant system and conditional classNames
+// Toast component
 const Toast = React.forwardRef<
   React.ElementRef<typeof ToastPrimitives.Root>,
   React.ComponentPropsWithoutRef<typeof ToastPrimitives.Root> &
     VariantProps<typeof toastVariants>
->(({ className, variant = "default", ...props }, ref) => {
+>(({ className, variant = "default", message, ...props }, ref) => {
   return (
     <ToastPrimitives.Root
       ref={ref}
       className={cn(toastVariants({ variant }), className)}
       {...props}
-    />
+    >
+      <ToastPrimitives.Description>{message}</ToastPrimitives.Description>
+      <ToastClose />
+    </ToastPrimitives.Root>
   );
 });
 Toast.displayName = ToastPrimitives.Root.displayName;
-
-// ToastAction component for actions like "Undo" on the toast
-const ToastAction = React.forwardRef<
-  React.ElementRef<typeof ToastPrimitives.Action>,
-  React.ComponentPropsWithoutRef<typeof ToastPrimitives.Action>
->(({ className, ...props }, ref) => (
-  <ToastPrimitives.Action
-    ref={ref}
-    className={cn(
-      "inline-flex h-8 shrink-0 items-center justify-center rounded-md border bg-transparent px-3 text-sm font-medium ring-offset-background transition-colors hover:bg-secondary focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 group-[.destructive]:border-muted/40 group-[.destructive]:hover:border-destructive/30 group-[.destructive]:hover:bg-destructive group-[.destructive]:hover:text-destructive-foreground group-[.destructive]:focus:ring-destructive",
-      className
-    )}
-    {...props}
-  />
-));
-ToastAction.displayName = ToastPrimitives.Action.displayName;
 
 // ToastClose component for closing the toast manually
 const ToastClose = React.forwardRef<
@@ -79,89 +84,4 @@ const ToastClose = React.forwardRef<
   <ToastPrimitives.Close
     ref={ref}
     className={cn(
-      "absolute right-2 top-2 rounded-md p-1 text-foreground/50 opacity-0 transition-opacity hover:text-foreground focus:opacity-100 focus:outline-none focus:ring-2 group-hover:opacity-100 group-[.destructive]:text-red-300 group-[.destructive]:hover:text-red-50 group-[.destructive]:focus:ring-red-400 group-[.destructive]:focus:ring-offset-red-600",
-      className
-    )}
-    aria-label="Close"
-    {...props}
-  >
-    <X className="h-4 w-4" />
-  </ToastPrimitives.Close>
-));
-ToastClose.displayName = ToastPrimitives.Close.displayName;
-
-// ToastTitle component for displaying the title inside the toast
-const ToastTitle = React.forwardRef<
-  React.ElementRef<typeof ToastPrimitives.Title>,
-  React.ComponentPropsWithoutRef<typeof ToastPrimitives.Title>
->(({ className, ...props }, ref) => (
-  <ToastPrimitives.Title
-    ref={ref}
-    className={cn("text-sm font-semibold", className)}
-    {...props}
-  />
-));
-ToastTitle.displayName = ToastPrimitives.Title.displayName;
-
-// ToastDescription component for displaying the description inside the toast
-const ToastDescription = React.forwardRef<
-  React.ElementRef<typeof ToastPrimitives.Description>,
-  React.ComponentPropsWithoutRef<typeof ToastPrimitives.Description>
->(({ className, ...props }, ref) => (
-  <ToastPrimitives.Description
-    ref={ref}
-    className={cn("text-sm opacity-90", className)}
-    {...props}
-  />
-));
-ToastDescription.displayName = ToastPrimitives.Description.displayName;
-
-// ToastContext and useToast hook for managing toast state
-const ToastContext = React.createContext<{
-  showToast: (message: string) => void;
-} | null>(null);
-
-export const useToast = () => {
-  const context = React.useContext(ToastContext);
-  if (!context) {
-    throw new Error("useToast must be used within a ToastProvider");
-  }
-  return context.showToast;
-};
-
-// ToastProvider component to provide toast context
-export const ToastProvider: React.FC = ({ children }) => {
-  const [toasts, setToasts] = React.useState<string[]>([]);
-
-  const showToast = (message: string) => {
-    setToasts((prevToasts) => [...prevToasts, message]);
-    setTimeout(() => {
-      setToasts((prevToasts) => prevToasts.slice(1)); // Remove the first toast after 3 seconds
-    }, 3000);
-  };
-
-  return (
-    <ToastContext.Provider value={{ showToast }}>
-      <div className="absolute top-0 left-0 z-[1000]">
-        {toasts.map((message, index) => (
-          <Toast key={index} variant="default">
-            <ToastDescription>{message}</ToastDescription>
-            <ToastClose />
-          </Toast>
-        ))}
-      </div>
-      {children}
-    </ToastContext.Provider>
-  );
-};
-
-// Export the components for use in the app
-export {
-  ToastProvider,
-  ToastViewport,
-  Toast,
-  ToastTitle,
-  ToastDescription,
-  ToastClose,
-  ToastAction,
-};
+      "absolute right-
