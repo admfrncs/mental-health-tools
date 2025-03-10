@@ -3,6 +3,11 @@ import { toast } from 'react-toastify';  // Ensure react-toastify is installed f
 
 // Utility function to throw an error if the response is not OK
 const throwIfResNotOk = async (res: Response): Promise<void> => {
+  if (!res) {
+    console.error("Response is undefined or null.");
+    throw new Error("No response received.");
+  }
+
   if (!res.ok) {
     const text = (await res.text()) || res.statusText;
 
