@@ -26,7 +26,6 @@ const SymptomTracker = () => {
 
   const saveMutation = useMutation({
     mutationFn: async (data: any) => {
-      console.log("Saving data:", data);  // Debugging line
       return await apiRequest("POST", "/api/symptom-assessments", data);
     },
   });
@@ -55,16 +54,15 @@ const SymptomTracker = () => {
   };
 
   const handleFinish = async () => {
-    console.log("Completing assessment", selectedSymptoms);  // Debugging line
     try {
       await saveMutation.mutateAsync({
         date: new Date(),
         symptoms: selectedSymptoms,
       });
-      setShowResults(true);  // Ensure this is being called
+
+      setShowResults(true);
     } catch (error) {
-      console.error("Error saving assessment:", error);  // Debugging line
-      toast.error("Failed to save assessment");
+      toast.error("Failed to save assessment");  // Correct usage of toast
     }
   };
 
