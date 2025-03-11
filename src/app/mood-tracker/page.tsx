@@ -1,11 +1,11 @@
-'use client'; // Add this directive to mark the file as a client component
+'use client';
 
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation'; // Fixed import for App Router
+import { useRouter } from 'next/navigation';
 import { Button } from 'src/components/ui/button';
 import { Card, CardContent } from 'src/components/ui/card';
 import { sections, sectionDisplayNames, questions, getScoreRating } from 'src/lib/questions';
-import { toast } from 'react-toastify'; // Directly importing toast
+import { toast } from 'react-toastify';
 import { useMutation } from '@tanstack/react-query';
 import { apiRequest } from 'src/lib/queryClient';
 import * as XLSX from 'xlsx';
@@ -17,91 +17,50 @@ import {
 } from 'src/components/ui/popover';
 import { Calendar } from 'src/components/ui/calendar';
 import { CalendarIcon } from 'lucide-react';
+import { submitAnswer } from 'src/lib/submit-answer';
+import { calculateResults } from 'src/lib/calculate-results';
 
 export default function MoodTracker() {
   const router = useRouter();
   const [date, setDate] = useState<string>(format(new Date(), 'PPP'));
   const [currentQuestion, setCurrentQuestion] = useState(0);
-  const [responses, setResponses] = useState<number[]>([]);
   const [showResults, setShowResults] = useState(false);
+  const [results, setResults] = useState<{ sectionScores: number[]; overallScore: number } | null>(null);
 
-  const saveMutation = useMutation({
-    mutationFn: async (data: any) => {
-      return await apiRequest('POST', '/api/mood-assessments', data);
-    },
-    onError: (error) => {
-      toast({
-        title: 'Error',
-        description: `Failed to save assessment data: ${error}`,
-        variant: 'destructive',
-      });
-    },
-    onSuccess: () => {
-      toast({
-        title: 'Success',
-        description: 'Assessment data saved successfully',
-      });
-    },
-  });
+  const handleAnswer = async (score: number) => {
+    try {
+      await submitAnswer(currentQuestion, score);
 
-  const handleAnswer = (score: number) => {
-    // Correctly accumulate all answers in the responses state
-    setResponses((prevResponses) => {
-      const updatedResponses = [...prevResponses, score];
-      return updatedResponses;
-    });
-
-    if (currentQuestion < questions.length - 1) {
-      setCurrentQuestion(currentQuestion + 1);
-    } else {
-      setShowResults(true);
+      if (currentQuestion < questions.length - 1) {
+        setCurrentQuestion(currentQuestion + 1);
+      } else {
+        const results = await calculateResults();
+        setResults(results);
+        setShowResults(true);
+      }
+    } catch (error) {
+      console.error("Error submitting answer:", error);
+      toast.error("Failed to save response. Please try again.");
     }
-  };
-
-  // Calculate section scores dynamically based on sections length
-  const calculateSectionScores = () => {
-    const sectionScores = new Array(sections.length).fill(0);
-    responses.forEach((score, index) => {
-      const sectionIndex = Math.floor(
-        index / (questions.length / sections.length) // Dynamic division
-      );
-      sectionScores[sectionIndex] += score;
-    });
-    return sectionScores;
-  };
-
-  const calculateOverallScore = (sectionScores: number[]) => {
-    return sectionScores.reduce((acc, score) => acc + score, 0);
   };
 
   const startNewAssessment = () => {
     setCurrentQuestion(0);
-    setResponses([]);
     setShowResults(false);
     setDate(format(new Date(), 'PPP'));
-    router.push('/'); // Navigate back to home page
+    router.push('/');
   };
 
   const exportToExcel = async () => {
-    if (responses.length === 0) {
-      toast({
-        title: 'Error',
-        description: 'Please complete the assessment before exporting.',
-        variant: 'destructive',
-      });
+    if (!results) {
+      toast.error("Please complete the assessment before exporting.");
       return;
     }
 
-    const sectionScores = calculateSectionScores();
-    const overallScore = calculateOverallScore(sectionScores);
+    const { sectionScores, overallScore } = results;
 
     try {
-      await saveMutation.mutateAsync({
-        date,
-        sectionScores,
-        overallScore,
-        responses,
-      });
+      await apiRequest('POST', '/api/mood-assessments', { date, sectionScores, overallScore });
 
       const wb = XLSX.utils.book_new();
       const wsData = [
@@ -117,27 +76,14 @@ export default function MoodTracker() {
       XLSX.utils.book_append_sheet(wb, ws, 'Assessment Results');
       XLSX.writeFile(wb, `mental-health-assessment-${new Date().toISOString()}.xlsx`);
 
-      toast({
-        title: 'Success',
-        description: 'Assessment data exported successfully',
-      });
+      toast.success("Assessment data exported successfully.");
     } catch (error) {
-      toast({
-        title: 'Error',
-        description: 'Failed to export assessment data',
-        variant: 'destructive',
-      });
+      toast.error("Failed to export assessment data.");
     }
   };
 
-  useEffect(() => {
-    // Reset responses on new assessment
-    setResponses([]);
-  }, [currentQuestion]);
-
-  if (showResults) {
-    const sectionScores = calculateSectionScores();
-    const overallScore = calculateOverallScore(sectionScores);
+  if (showResults && results) {
+    const { sectionScores, overallScore } = results;
 
     return (
       <div className="min-h-screen bg-gradient-to-b from-background to-muted p-4">
