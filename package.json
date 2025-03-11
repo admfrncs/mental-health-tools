@@ -72,6 +72,7 @@
     "slick-carousel": "^1.8.1",
     "tailwind-merge": "^3.0.2",
     "tailwindcss-animate": "^1.0.7",
+    "uuid": "^11.1.0",
     "vite-tsconfig-paths": "^5.1.4",
     "wouter": "^3.6.0",
     "ws": "^8.18.1",
