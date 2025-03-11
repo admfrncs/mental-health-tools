@@ -1,3 +1,5 @@
+// src/lib/questions.ts
+
 export const sectionDisplayNames = [
   "Mood & Emotional Regulation",
   "Anxiety & Cognitive Functioning",
@@ -155,6 +157,22 @@ export const questions: Question[] = [
   }
 ];
 
-export const getScoreRating = () => {
-  // Your implementation here
+// This function calculates the score for each section
+export const calculateSectionScores = (responses: number[]): number[] => {
+  const sectionScores = new Array(sections.length).fill(0);
+
+  responses.forEach((score, index) => {
+    const sectionIndex = questions[index].section;
+    sectionScores[sectionIndex] += score;
+  });
+
+  return sectionScores;
+};
+
+// This function provides a rating based on the score for each section
+export const getScoreRating = (score: number): string => {
+  if (score <= 10) return "Low";
+  if (score <= 20) return "Moderate";
+  if (score <= 30) return "High";
+  return "Very High";
 };
