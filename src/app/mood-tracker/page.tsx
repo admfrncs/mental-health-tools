@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation"; // Fixed import for App Router
 import { Button } from "src/components/ui/button";
 import { Card, CardContent } from "src/components/ui/card";
 import { sections, sectionDisplayNames, questions, getScoreRating } from "src/lib/questions";
-import { toast } from 'react-toastify';
+import { toast } from 'react-toastify';  // Directly importing toast
 import { useMutation } from "@tanstack/react-query";
 import { apiRequest } from "src/lib/queryClient";
 import * as XLSX from "xlsx";
@@ -20,7 +20,6 @@ import { CalendarIcon } from "lucide-react";
 
 export default function MoodTracker() {
   const router = useRouter();
-  const { toast } = useToast();
   const [date, setDate] = useState<string>(format(new Date(), "PPP"));
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [responses, setResponses] = useState<number[]>([]);
