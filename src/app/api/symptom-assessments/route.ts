@@ -8,16 +8,23 @@ let savedAssessments: SymptomAssessment[] = [];
 /**
  * Handles POST requests to save a symptom assessment.
  */
-export async function POST(request: Request) {
+export async function POST(req: Request) {
   try {
-    const data: { symptoms: SelectedSymptom[] } = await request.json();
+      const body = await req.json(); // Ensure the request body is parsed correctly
+      console.log("Received data:", body); // Debugging log
+      
+      if (!body || !body.someRequiredField) { // Adjust validation as needed
+          return NextResponse.json({ error: "Invalid request data" }, { status: 400 });
+      }
 
-    if (!data || !Array.isArray(data.symptoms) || data.symptoms.length === 0) {
-      return NextResponse.json(
-        { error: "Invalid data format. Expected an object with a 'symptoms' array." },
-        { status: 400 }
-      );
-    }
+      // Process request...
+      return NextResponse.json({ success: true });
+  } catch (error) {
+      console.error("Error processing request:", error);
+      return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+  }
+}
+
 
     const newAssessment: SymptomAssessment = {
       id: uuidv4(),

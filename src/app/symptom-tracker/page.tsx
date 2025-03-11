@@ -76,23 +76,26 @@ ${selectedSymptoms
     document.body.removeChild(link);
   };
 
-  // Define the handleFinish function
   const handleFinish = () => {
     if (selectedSymptoms.length === 0) {
       toast.error("Please select at least one symptom before completing the assessment.");
       return;
     }
-
-    // Save the selected symptoms
+  
+    console.log("Sending data to API:", selectedSymptoms); // Debugging line
+  
     saveMutation.mutate(selectedSymptoms, {
       onSuccess: () => {
         setShowResults(true);
       },
       onError: (error) => {
+        console.error("API error:", error); // Log error details
         toast.error("An error occurred while saving the assessment.");
       },
     });
   };
+  
+  
 
   if (showResults) {
     return (
