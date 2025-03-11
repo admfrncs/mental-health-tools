@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation"; // Fixed import for App Router
 import { Button } from "src/components/ui/button";
 import { Card, CardContent } from "src/components/ui/card";
 import { sections, sectionDisplayNames, questions, getScoreRating } from "src/lib/questions";
-import { useToast } from "src/components/ui/toast";
+import { toast } from 'react-toastify';
 import { useMutation } from "@tanstack/react-query";
 import { apiRequest } from "src/lib/queryClient";
 import * as XLSX from "xlsx";
