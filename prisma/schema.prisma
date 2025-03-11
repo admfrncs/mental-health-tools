@@ -1,0 +1,36 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./db.sqlite"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Response {
+  id          Int      @id @default(autoincrement())
+  userId      String   // user ID to identify the user
+  questionId  Int      // the question this answer relates to
+  answer      Int      // the score for this answer
+  createdAt   DateTime @default(now())
+}
+
+model Question {
+  id      Int    @id @default(autoincrement())
+  text    String
+  options Option[]
+}
+
+model Option {
+  id        Int     @id @default(autoincrement())
+  text      String
+  score     Int
+  question  Question @relation(fields: [questionId], references: [id])
+  questionId Int
+}
