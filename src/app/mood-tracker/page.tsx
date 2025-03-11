@@ -45,10 +45,8 @@ export default function MoodTracker() {
   });
 
   const handleAnswer = (score: number) => {
-    setResponses((prevResponses) => {
-      const newResponses = [...prevResponses, score];
-      return newResponses;
-    });
+    // Correctly accumulate all answers in the responses state
+    setResponses((prevResponses) => [...prevResponses, score]);
 
     if (currentQuestion < questions.length - 1) {
       setCurrentQuestion(currentQuestion + 1);
