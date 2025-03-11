@@ -1,4 +1,6 @@
-export const symptomCategories = [
+import { SymptomCategory, SeverityLevel } from './types';  // Import the types
+
+export const symptomCategories: SymptomCategory[] = [
   {
     name: "Mood-Related Symptoms",
     symptoms: [
@@ -111,4 +113,4 @@ export const symptomCategories = [
   }
 ] as const;
 
-export const severityLevels = ["Mild", "Moderate", "Severe"] as const;
+export const severityLevels: SeverityLevel[] = ["Mild", "Moderate", "Severe"];
