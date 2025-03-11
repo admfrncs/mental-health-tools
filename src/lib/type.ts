@@ -11,4 +11,8 @@ export type SelectedSymptom = {
   severity: SeverityLevel;
 };
 
-export type SymptomAssessment = SelectedSymptom[];
+export type SymptomAssessment = {
+  id: string; // Unique ID for tracking (UUID recommended)
+  date: string; // Store the date of the assessment
+  symptoms: SelectedSymptom[];
+};
