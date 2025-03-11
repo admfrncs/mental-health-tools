@@ -1,19 +1,31 @@
 import { NextResponse } from 'next/server';
 import { MoodAssessment } from 'src/lib/types'; // Adjust path as needed
+import { v4 as uuidv4 } from 'uuid';
+
+// Temporary in-memory storage (replace with a database in production)
+let savedMoodAssessments: MoodAssessment[] = [];
 
 export async function POST(request: Request) {
   try {
-    // Parse the incoming JSON body
     const data: MoodAssessment = await request.json(); // Type assertion to MoodAssessment
 
-    // Log the received data to inspect
-    console.log("Received Data:", data);
+    // Add a UUID for uniqueness and a date for consistency
+    const newMoodAssessment: MoodAssessment = {
+      ...data,
+      id: uuidv4(),
+      date: new Date().toISOString(), // Set the date when saving
+    };
 
-    // In a real application, you would save this data to a database or perform other operations
-    // For now, just return the data back to the client as confirmation
-    return NextResponse.json({ success: true, data });
+    // Store the new mood assessment (could be replaced with a DB)
+    savedMoodAssessments.push(newMoodAssessment);
+
+    // Return the saved data as confirmation
+    return NextResponse.json(
+      { message: "Mood assessment successfully saved!", data: newMoodAssessment },
+      { status: 201 }
+    );
   } catch (error) {
-    console.error("Error saving assessment:", error);
+    console.error("Error saving mood assessment:", error);
 
     // Return an error response if something goes wrong
     return NextResponse.json(
@@ -24,6 +36,14 @@ export async function POST(request: Request) {
 }
 
 export async function GET() {
-  // In a real app, this would fetch saved assessments from a database
-  return NextResponse.json([]);
+  try {
+    // Fetch the saved mood assessments (from in-memory storage or DB)
+    return NextResponse.json(savedMoodAssessments, { status: 200 });
+  } catch (error) {
+    console.error("Error fetching mood assessments:", error);
+    return NextResponse.json(
+      { error: "Internal Server Error" },
+      { status: 500 }
+    );
+  }
 }
