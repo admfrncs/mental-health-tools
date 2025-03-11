@@ -29,13 +29,19 @@ export default function MoodTracker() {
     mutationFn: async (data: any) => {
       return await apiRequest("POST", "/api/mood-assessments", data);
     },
-    onError: () => {
+    onError: (error) => {
       toast({
         title: "Error",
-        description: "Failed to save assessment data",
+        description: `Failed to save assessment data: ${error}`,
         variant: "destructive",
       });
     },
+    onSuccess: () => {
+      toast({
+        title: "Success",
+        description: "Assessment data saved successfully",
+      });
+    }
   });
 
   const handleAnswer = (score: number) => {
