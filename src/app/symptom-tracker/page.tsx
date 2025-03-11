@@ -82,10 +82,12 @@ ${selectedSymptoms
       return;
     }
   
-    console.log("Sending data to API:", selectedSymptoms); // Debugging line
+    console.log("Sending data to API:", selectedSymptoms); // Debugging log
   
     saveMutation.mutate(selectedSymptoms, {
-      onSuccess: () => {
+      onSuccess: async (res) => {
+        const data = await res.json(); // Convert response to JSON
+        console.log("API response data:", data);
         setShowResults(true);
       },
       onError: (error) => {
@@ -94,6 +96,7 @@ ${selectedSymptoms
       },
     });
   };
+  
   
   
 
