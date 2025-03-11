@@ -10,13 +10,6 @@ import { useMutation } from '@tanstack/react-query';
 import { apiRequest } from 'src/lib/queryClient';
 import * as XLSX from 'xlsx';
 import { format } from 'date-fns';
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from 'src/components/ui/popover';
-import { Calendar } from 'src/components/ui/calendar';
-import { CalendarIcon } from 'lucide-react';
 import { submitAnswer } from 'src/lib/submit-answer';
 import { calculateResults } from 'src/lib/calculate-results';
 
@@ -29,7 +22,10 @@ export default function MoodTracker() {
 
   const handleAnswer = async (score: number) => {
     try {
-      await submitAnswer(currentQuestion, score);
+      // Replace 'userId' with the current user's identifier (from session or context)
+      const userId = 1; // Adjust this as needed
+
+      await submitAnswer({ userId, questionId: currentQuestion, score, date });
 
       if (currentQuestion < questions.length - 1) {
         setCurrentQuestion(currentQuestion + 1);

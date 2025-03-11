@@ -19,13 +19,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         userId,
         questionId,
         score,
-        date: new Date(date),
+        date,
       },
     });
 
-    return res.status(200).json({ message: 'Answer submitted successfully', response });
+    res.status(200).json(response);
   } catch (error) {
-    console.error('Database error:', error);
-    return res.status(500).json({ error: 'Failed to store answer' });
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
   }
 }
