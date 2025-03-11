@@ -46,7 +46,10 @@ export default function MoodTracker() {
 
   const handleAnswer = (score: number) => {
     // Correctly accumulate all answers in the responses state
-    setResponses((prevResponses) => [...prevResponses, score]);
+    setResponses((prevResponses) => {
+      const updatedResponses = [...prevResponses, score];
+      return updatedResponses;
+    });
 
     if (currentQuestion < questions.length - 1) {
       setCurrentQuestion(currentQuestion + 1);
