@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { SymptomAssessment, SelectedSymptom } from "src/lib/types";
-import { v4 as uuidv4 } from "uuid"; // Import UUID for unique IDs
+import { v4 as uuidv4 } from "uuid/dist/v4";
 
 // Temporary in-memory storage (replace with a database in production)
 let savedAssessments: SymptomAssessment[] = [];
