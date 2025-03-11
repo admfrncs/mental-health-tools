@@ -1,52 +1,54 @@
 'use client'; // Add this directive to mark the file as a client component
 
-import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation"; // Fixed import for App Router
-import { Button } from "src/components/ui/button";
-import { Card, CardContent } from "src/components/ui/card";
-import { sections, sectionDisplayNames, questions, getScoreRating } from "src/lib/questions";
-import { toast } from 'react-toastify';  // Directly importing toast
-import { useMutation } from "@tanstack/react-query";
-import { apiRequest } from "src/lib/queryClient";
-import * as XLSX from "xlsx";
-import { format } from "date-fns";
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation'; // Fixed import for App Router
+import { Button } from 'src/components/ui/button';
+import { Card, CardContent } from 'src/components/ui/card';
+import { sections, sectionDisplayNames, questions, getScoreRating } from 'src/lib/questions';
+import { toast } from 'react-toastify'; // Directly importing toast
+import { useMutation } from '@tanstack/react-query';
+import { apiRequest } from 'src/lib/queryClient';
+import * as XLSX from 'xlsx';
+import { format } from 'date-fns';
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "src/components/ui/popover";
-import { Calendar } from "src/components/ui/calendar";
-import { CalendarIcon } from "lucide-react";
+} from 'src/components/ui/popover';
+import { Calendar } from 'src/components/ui/calendar';
+import { CalendarIcon } from 'lucide-react';
 
 export default function MoodTracker() {
   const router = useRouter();
-  const [date, setDate] = useState<string>(format(new Date(), "PPP"));
+  const [date, setDate] = useState<string>(format(new Date(), 'PPP'));
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [responses, setResponses] = useState<number[]>([]);
   const [showResults, setShowResults] = useState(false);
 
   const saveMutation = useMutation({
     mutationFn: async (data: any) => {
-      return await apiRequest("POST", "/api/mood-assessments", data);
+      return await apiRequest('POST', '/api/mood-assessments', data);
     },
     onError: (error) => {
       toast({
-        title: "Error",
+        title: 'Error',
         description: `Failed to save assessment data: ${error}`,
-        variant: "destructive",
+        variant: 'destructive',
       });
     },
     onSuccess: () => {
       toast({
-        title: "Success",
-        description: "Assessment data saved successfully",
+        title: 'Success',
+        description: 'Assessment data saved successfully',
       });
-    }
+    },
   });
 
   const handleAnswer = (score: number) => {
-    const newResponses = [...responses, score];
-    setResponses(newResponses);
+    setResponses((prevResponses) => {
+      const newResponses = [...prevResponses, score];
+      return newResponses;
+    });
 
     if (currentQuestion < questions.length - 1) {
       setCurrentQuestion(currentQuestion + 1);
@@ -55,10 +57,13 @@ export default function MoodTracker() {
     }
   };
 
+  // Calculate section scores dynamically based on sections length
   const calculateSectionScores = () => {
-    const sectionScores = new Array(5).fill(0);
+    const sectionScores = new Array(sections.length).fill(0);
     responses.forEach((score, index) => {
-      const sectionIndex = Math.floor(index / 4);
+      const sectionIndex = Math.floor(
+        index / (questions.length / sections.length) // Dynamic division
+      );
       sectionScores[sectionIndex] += score;
     });
     return sectionScores;
@@ -72,16 +77,16 @@ export default function MoodTracker() {
     setCurrentQuestion(0);
     setResponses([]);
     setShowResults(false);
-    setDate(format(new Date(), "PPP"));
-    router.push("/"); // Navigate back to home page
+    setDate(format(new Date(), 'PPP'));
+    router.push('/'); // Navigate back to home page
   };
 
   const exportToExcel = async () => {
     if (responses.length === 0) {
       toast({
-        title: "Error",
-        description: "Please complete the assessment before exporting.",
-        variant: "destructive",
+        title: 'Error',
+        description: 'Please complete the assessment before exporting.',
+        variant: 'destructive',
       });
       return;
     }
@@ -99,8 +104,8 @@ export default function MoodTracker() {
 
       const wb = XLSX.utils.book_new();
       const wsData = [
-        ["Date", new Date().toISOString()],
-        ["Overall Score", overallScore],
+        ['Date', new Date().toISOString()],
+        ['Overall Score', overallScore],
         ...sectionScores.map((score, index) => [
           `Section ${index + 1} Score`,
           score,
@@ -108,18 +113,18 @@ export default function MoodTracker() {
       ];
 
       const ws = XLSX.utils.aoa_to_sheet(wsData);
-      XLSX.utils.book_append_sheet(wb, ws, "Assessment Results");
+      XLSX.utils.book_append_sheet(wb, ws, 'Assessment Results');
       XLSX.writeFile(wb, `mental-health-assessment-${new Date().toISOString()}.xlsx`);
 
       toast({
-        title: "Success",
-        description: "Assessment data exported successfully",
+        title: 'Success',
+        description: 'Assessment data exported successfully',
       });
     } catch (error) {
       toast({
-        title: "Error",
-        description: "Failed to export assessment data",
-        variant: "destructive",
+        title: 'Error',
+        description: 'Failed to export assessment data',
+        variant: 'destructive',
       });
     }
   };
@@ -191,7 +196,7 @@ export default function MoodTracker() {
                 <Calendar
                   mode="single"
                   selected={new Date(date)}
-                  onSelect={(newDate) => newDate && setDate(format(newDate, "PPP"))}
+                  onSelect={(newDate) => newDate && setDate(format(newDate, 'PPP'))}
                   initialFocus
                   aria-label="Calendar"
                 />
