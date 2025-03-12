@@ -1,22 +1,22 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import { Button } from 'src/components/ui/button';
-import { Card, CardContent } from 'src/components/ui/card';
-import { Calendar } from 'src/components/ui/calendar';
-import { PopoverTrigger, PopoverContent } from 'src/components/ui/popover';
-import { CalendarIcon } from 'lucide-react';
-import { sections, sectionDisplayNames, questions } from 'src/lib/questions';
-import { toast } from 'react-toastify';
-import { calculateResults } from 'src/lib/calculate-results';
-import { format, parse } from 'date-fns';
-import { Popover, OverlayTrigger } from 'react-bootstrap';
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { Button } from "src/components/ui/button";
+import { Card, CardContent } from "src/components/ui/card";
+import { Calendar } from "src/components/ui/calendar";
+import { Popover, PopoverTrigger, PopoverContent } from "src/components/ui/popover";
+import { CalendarIcon } from "lucide-react";
+import { sections, sectionDisplayNames, questions } from "src/lib/questions";
+import { toast } from "react-toastify";
+import { calculateResults } from "src/lib/calculate-results";
+import { format, parse } from "date-fns";
 
 export default function MoodTracker() {
   const router = useRouter();
-  const [date, setDate] = useState<string>(format(new Date(), 'PPP'));
+  const [date, setDate] = useState<string>(format(new Date(), "PPP"));
   const [currentQuestion, setCurrentQuestion] = useState<number>(0);
+  const [responses, setResponses] = useState<number[]>(new Array(questions.length).fill(0));
   const [showResults, setShowResults] = useState<boolean>(false);
   const [results, setResults] = useState<{ sectionScores: number[]; overallScore: number } | null>(null);
 
@@ -26,37 +26,16 @@ export default function MoodTracker() {
 
   const handleAnswer = async (answerId: number) => {
     try {
-      const userId = 1; // Adjust as needed, replace with actual logged-in user id
-      if (!userId || currentQuestion === undefined || answerId === undefined || !date) {
-        console.error("Missing required fields:", { userId, currentQuestion, answerId, date });
-        toast.error("Invalid response data. Please try again.");
-        return;
-      }
-
-      console.log("Submitting answer with:", { userId, questionId: currentQuestion, answerId, date });
-
-      // Send answer to API route
-      const response = await fetch('/api/mood-assessments', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          userId,
-          questionId: currentQuestion + 1, // Adding 1 as Question IDs start from 1 in your schema
-          answerId,
-          date,
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to submit response');
-      }
+      const updatedResponses = [...responses];
+      updatedResponses[currentQuestion] = answerId;
+      setResponses(updatedResponses);
 
       if (currentQuestion < questions.length - 1) {
         setCurrentQuestion((prev) => prev + 1);
       } else {
         console.log("Fetching results...");
-        const results = await calculateResults(userId);
-        setResults(results);
+        const calculatedResults = calculateResults(updatedResponses);
+        setResults(calculatedResults);
         setShowResults(true);
       }
     } catch (error) {
@@ -68,8 +47,9 @@ export default function MoodTracker() {
   const startNewAssessment = () => {
     setCurrentQuestion(0);
     setShowResults(false);
-    setDate(format(new Date(), 'PPP'));
-    router.push('/');
+    setResponses(new Array(questions.length).fill(0));
+    setDate(format(new Date(), "PPP"));
+    router.push("/");
   };
 
   return (
@@ -78,45 +58,57 @@ export default function MoodTracker() {
         <CardContent className="p-6">
           <div className="mb-6">
             <h2 className="text-lg font-medium mb-2">Select Date</h2>
-            <OverlayTrigger
-              trigger="click"
-              placement="bottom"
-              overlay={
-                <Popover id="popover-calendar">
-                  <Popover.Body>
-                    <Calendar
-                      mode="single"
-                      selected={parse(date, 'PPP', new Date())}
-                      onSelect={(newDate) => newDate && setDate(format(newDate, 'PPP'))}
-                      initialFocus
-                      aria-label="Calendar"
-                    />
-                  </Popover.Body>
-                </Popover>
-              }
-            >
-              <Button variant="outline" className="w-full justify-start text-left font-normal" aria-label="Select date">
-                <CalendarIcon className="mr-2 h-4 w-4" />
-                {date}
-              </Button>
-            </OverlayTrigger>
-          </div>
-          <div className="mt-8">
-            <p className="text-sm text-muted-foreground mb-2">Section: {sections[Math.floor(currentQuestion / 4)]}</p>
-            <h3 className="text-xl font-semibold mb-4">{questions[currentQuestion]?.text || 'Question not available'}</h3>
-            <div className="grid gap-3">
-              {questions[currentQuestion]?.answers?.map((answer, index) => (
-                <Button
-                  key={index}
-                  variant="outline"
-                  className="justify-start h-auto py-3"
-                  onClick={() => handleAnswer(answer.id)}
-                >
-                  {answer.text}
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button variant="outline" className="flex items-center gap-2">
+                  <CalendarIcon className="w-4 h-4" />
+                  {date}
                 </Button>
-              ))}
-            </div>
+              </PopoverTrigger>
+              <PopoverContent className="p-2">
+                <Calendar
+                  mode="single"
+                  selected={parse(date, "PPP", new Date())}
+                  onSelect={(newDate) => newDate && setDate(format(newDate, "PPP"))}
+                  initialFocus
+                  aria-label="Calendar"
+                />
+              </PopoverContent>
+            </Popover>
           </div>
+
+          {!showResults ? (
+            <>
+              <h2 className="text-lg font-semibold mb-4">
+                {questions[currentQuestion].text}
+              </h2>
+              <div className="flex flex-col gap-2">
+                {questions[currentQuestion].options.map((option, index) => (
+                  <Button
+                    key={index}
+                    variant={responses[currentQuestion] === option.score ? "default" : "outline"}
+                    className="text-left"
+                    onClick={() => handleAnswer(option.score)}
+                  >
+                    {option.text}
+                  </Button>
+                ))}
+              </div>
+            </>
+          ) : (
+            <>
+              <h2 className="text-lg font-semibold mb-4">Results</h2>
+              {sections.map((section, index) => (
+                <p key={index}>
+                  {sectionDisplayNames[index]}: {results?.sectionScores[index]}
+                </p>
+              ))}
+              <p className="font-bold">Overall Score: {results?.overallScore}</p>
+              <Button className="mt-4" onClick={startNewAssessment}>
+                Start New Assessment
+              </Button>
+            </>
+          )}
         </CardContent>
       </Card>
     </div>
