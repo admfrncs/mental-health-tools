@@ -1,3 +1,4 @@
+// submit-answer.ts
 import { NextApiRequest, NextApiResponse } from 'next';
 import prisma from 'src/lib/prisma';
 
@@ -35,7 +36,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 }
 
 // Named export for submitAnswer
-export async function submitAnswer(userId: string, questionId: string, answerId: string, date: string) {
+export async function submitAnswer(userId: number, questionId: number, answerId: number, date: string) {
   if (!userId || !questionId || !answerId || !date) {
     throw new Error('Missing required fields');
   }
@@ -43,9 +44,9 @@ export async function submitAnswer(userId: string, questionId: string, answerId:
   try {
     const response = await prisma.userResponse.create({
       data: {
-        userId: parseInt(userId), // Ensure it's the correct type if coming from a string
-        questionId: parseInt(questionId),
-        answerId: parseInt(answerId),
+        userId,
+        questionId,
+        answerId,
         date: new Date(date), // Convert date to Date object if it's a string
       },
     });
