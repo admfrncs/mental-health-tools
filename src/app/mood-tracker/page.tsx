@@ -102,25 +102,28 @@ export default function MoodTracker() {
           {!showResults ? (
             <>
               <h2 className="text-lg font-semibold mb-4">
-                {sections[currentQuestion]}
+                {questions[currentQuestion]?.text}
               </h2>
-              {/* Render Question */}
-              <div>
-                <h3>{questions[currentQuestion]}</h3>
-                {/* Options for answering */}
-                <Button onClick={() => handleAnswer(1)}>Answer 1</Button>
-                <Button onClick={() => handleAnswer(2)}>Answer 2</Button>
-              </div>
+              <ul>
+                {questions[currentQuestion]?.options.map((option, idx) => (
+                  <li key={idx}>
+                    <button onClick={() => handleAnswer(option.id)}>{option.text}</button>
+                  </li>
+                ))}
+              </ul>
             </>
           ) : (
-            <>
-              <h2 className="text-lg font-semibold mb-4">Results</h2>
-              <div>
-                <p>Section Scores: {results?.sectionScores.join(", ")}</p>
-                <p>Total Score: {results?.overallScore}</p>
-                <Button onClick={startNewAssessment}>Start New Assessment</Button>
-              </div>
-            </>
+            <div>
+              <h3>Section Scores</h3>
+              <ul>
+                {results?.sectionScores.map((score, index) => (
+                  <li key={index}>Section {index + 1}: {score}</li>
+                ))}
+              </ul>
+              <h3>Total Score</h3>
+              <p>{results?.overallScore}</p>
+              <button onClick={startNewAssessment}>Start New Assessment</button>
+            </div>
           )}
         </CardContent>
       </Card>
