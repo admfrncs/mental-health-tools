@@ -54,7 +54,7 @@ export default function MoodTracker() {
 
         // Handle error if the response is not successful
         if (!res.ok) {
-          throw new Error("Failed to calculate results");
+          throw new Error("Failed to figure out the results");
         }
 
         const data = await res.json();

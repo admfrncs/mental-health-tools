@@ -1,4 +1,4 @@
-// src/app/api/calculate-results/route.ts
+// src/app/api/mood-assessments/route.ts
 import { NextResponse } from "next/server";
 import { prisma } from "src/lib/prisma";
 
