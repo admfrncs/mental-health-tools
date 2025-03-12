@@ -1,6 +1,6 @@
-// src/lib/calculate-results.ts
 import { prisma } from "src/lib/prisma";
 
+// Calculate results based on the responses for a given user
 export async function calculateResults(userId: string, responses: number[]) {
   if (!userId) {
     throw new Error("Missing userId");
@@ -19,7 +19,7 @@ export async function calculateResults(userId: string, responses: number[]) {
       throw new Error("No responses found for this user");
     }
 
-    // Adjust section count based on your assessment
+    // Initialize section scores and total score
     const sectionScores: number[] = [0, 0, 0];
     let totalScore = 0;
 
@@ -30,7 +30,7 @@ export async function calculateResults(userId: string, responses: number[]) {
         return;
       }
 
-      // Assuming 4 questions per section, adjust if needed
+      // Assuming 4 questions per section
       const sectionIndex = Math.floor((questionId - 1) / 4);
       if (sectionIndex < sectionScores.length) {
         sectionScores[sectionIndex] += response.score;
