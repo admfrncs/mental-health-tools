@@ -7,7 +7,7 @@ import { Card, CardContent } from 'src/components/ui/card';
 import { Calendar } from 'src/components/ui/calendar';
 import { PopoverTrigger, PopoverContent } from 'src/components/ui/popover';
 import { CalendarIcon } from 'lucide-react';
-import { sections, sectionDisplayNames, questions, getScoreRating } from 'src/lib/questions';
+import { sections, sectionDisplayNames, questions } from 'src/lib/questions';
 import { toast } from 'react-toastify';
 import { calculateResults } from 'src/lib/calculate-results';
 import { format, parse } from 'date-fns';
@@ -34,7 +34,22 @@ export default function MoodTracker() {
       }
 
       console.log("Submitting answer with:", { userId, questionId: currentQuestion, score, date });
-      await handler({ userId, questionId: currentQuestion, score, date }); // Use handler here
+
+      // Send answer to API route
+      const response = await fetch('/api/mood-assessments', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          userId,
+          questionId: currentQuestion,
+          score,
+          date,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to submit response');
+      }
 
       if (currentQuestion < questions.length - 1) {
         setCurrentQuestion((prev) => prev + 1);
