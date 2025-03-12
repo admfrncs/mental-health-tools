@@ -2,23 +2,31 @@ import { NextResponse } from "next/server";
 import prisma from "src/lib/prisma";
 import { v4 as uuidv4 } from "uuid";
 
-// Handle POST request to save a new mood assessment
+// Handle POST request to save a new user response (mood assessment)
 export async function POST(request: Request) {
   try {
     const data = await request.json(); // Get data from request body
 
-    // Create a new mood assessment in the database
-    const newMoodAssessment = await prisma.moodAssessment.create({
+    // Ensure all required fields are present
+    if (!data.userId || data.questionId === undefined || data.answerId === undefined || !data.date) {
+      return NextResponse.json(
+        { error: "Missing required fields" },
+        { status: 400 }
+      );
+    }
+
+    // Create a new user response in the database
+    const newUserResponse = await prisma.userResponse.create({
       data: {
-        id: uuidv4(), // Generate a UUID
-        mood: data.mood, // Assuming "mood" is a field
-        score: data.score, // Adjust fields based on your Prisma schema
-        date: new Date().toISOString(), // Store current timestamp
+        userId: data.userId,
+        questionId: data.questionId,
+        answerId: data.answerId,
+        // You can add a date or timestamp if needed
       },
     });
 
     return NextResponse.json(
-      { message: "Mood assessment successfully saved!", data: newMoodAssessment },
+      { message: "Mood assessment successfully saved!", data: newUserResponse },
       { status: 201 }
     );
   } catch (error) {
@@ -30,10 +38,10 @@ export async function POST(request: Request) {
   }
 }
 
-// Handle GET request to fetch all mood assessments
+// Handle GET request to fetch all mood assessments (optional)
 export async function GET() {
   try {
-    const moodAssessments = await prisma.moodAssessment.findMany(); // Fetch all records from DB
+    const moodAssessments = await prisma.userResponse.findMany(); // Fetch all records from DB
     return NextResponse.json(moodAssessments, { status: 200 });
   } catch (error) {
     console.error("Error fetching mood assessments:", error);

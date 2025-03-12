@@ -24,16 +24,16 @@ export default function MoodTracker() {
     console.log("Initialized Date:", date);
   }, [date]);
 
-  const handleAnswer = async (score: number) => {
+  const handleAnswer = async (answerId: number) => {
     try {
-      const userId = 1; // Adjust as needed
-      if (!userId || currentQuestion === undefined || score === undefined || !date) {
-        console.error("Missing required fields:", { userId, currentQuestion, score, date });
+      const userId = 1; // Adjust as needed, replace with actual logged-in user id
+      if (!userId || currentQuestion === undefined || answerId === undefined || !date) {
+        console.error("Missing required fields:", { userId, currentQuestion, answerId, date });
         toast.error("Invalid response data. Please try again.");
         return;
       }
 
-      console.log("Submitting answer with:", { userId, questionId: currentQuestion, score, date });
+      console.log("Submitting answer with:", { userId, questionId: currentQuestion, answerId, date });
 
       // Send answer to API route
       const response = await fetch('/api/mood-assessments', {
@@ -41,8 +41,8 @@ export default function MoodTracker() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           userId,
-          questionId: currentQuestion,
-          score,
+          questionId: currentQuestion + 1, // Adding 1 as Question IDs start from 1 in your schema
+          answerId,
           date,
         }),
       });
@@ -105,9 +105,14 @@ export default function MoodTracker() {
             <p className="text-sm text-muted-foreground mb-2">Section: {sections[Math.floor(currentQuestion / 4)]}</p>
             <h3 className="text-xl font-semibold mb-4">{questions[currentQuestion]?.text || 'Question not available'}</h3>
             <div className="grid gap-3">
-              {questions[currentQuestion]?.options?.map((option, index) => (
-                <Button key={index} variant="outline" className="justify-start h-auto py-3" onClick={() => handleAnswer(option.score)}>
-                  {option.text}
+              {questions[currentQuestion]?.answers?.map((answer, index) => (
+                <Button
+                  key={index}
+                  variant="outline"
+                  className="justify-start h-auto py-3"
+                  onClick={() => handleAnswer(answer.id)}
+                >
+                  {answer.text}
                 </Button>
               ))}
             </div>
