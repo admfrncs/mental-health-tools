@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import prisma from "src/lib/prisma";
+import { prisma } from "src/lib/prisma";
 import { v4 as uuidv4 } from "uuid";
 
 // Handle POST request to save a new mood assessment
