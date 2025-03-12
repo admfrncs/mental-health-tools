@@ -1,3 +1,4 @@
+// src/app/page.tsx
 "use client";
 
 import { useState, useEffect } from "react";
@@ -11,6 +12,7 @@ import { sections, sectionDisplayNames, questions } from "src/lib/questions";
 import { toast } from "react-toastify";
 import { format, parse } from "date-fns";
 
+// Assume userId is available through context or props
 export default function MoodTracker() {
   const router = useRouter();
   const [date, setDate] = useState<string>(format(new Date(), "PPP"));
@@ -36,19 +38,27 @@ export default function MoodTracker() {
         setCurrentQuestion((prev) => prev + 1);
       } else {
         console.log("Fetching results...");
-        const response = await fetch("/api/calculate-results", {
+        // Make API call to calculate results
+        const res = await fetch("/api/calculate-results", {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            "Content-Type": "application/json",
+          },
           body: JSON.stringify({ userId }),
         });
-        const data = await response.json();
-        if (data.error) {
-          console.error("Error calculating results:", data.error);
-          toast.error("Failed to fetch results.");
-        } else {
-          setResults(data);
-          setShowResults(true);
+
+        if (!res.ok) {
+          throw new Error("Failed to calculate results");
         }
+
+        const data = await res.json();
+
+        if (data.error) {
+          throw new Error(data.error);
+        }
+
+        setResults(data);  // Set results from API response
+        setShowResults(true);
       }
     } catch (error) {
       console.error("Error submitting answer:", error);
@@ -92,33 +102,4 @@ export default function MoodTracker() {
           {!showResults ? (
             <>
               <h2 className="text-lg font-semibold mb-4">
-                {questions[currentQuestion].text}
-              </h2>
-              <div className="flex flex-col gap-2">
-                {questions[currentQuestion].options.map((option, index) => (
-                  <Button
-                    key={index}
-                    variant={responses[currentQuestion] === option.score ? "default" : "outline"}
-                    className="text-left"
-                    onClick={() => handleAnswer(option.score)}
-                  >
-                    {option.text}
-                  </Button>
-                ))}
-              </div>
-            </>
-          ) : (
-            <div>
-              <h2 className="text-lg font-semibold mb-4">Results</h2>
-              <div className="mb-4">
-                <p>Section Scores: {results?.sectionScores.join(", ")}</p>
-                <p>Total Score: {results?.overallScore}</p>
-              </div>
-              <Button onClick={startNewAssessment}>Start New Assessment</Button>
-            </div>
-          )}
-        </CardContent>
-      </Card>
-    </div>
-  );
-}
+                {ques
