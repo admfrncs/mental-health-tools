@@ -9,8 +9,7 @@ import { toast } from 'react-toastify';
 import { submitAnswer } from 'src/lib/submit-answer';
 import { calculateResults } from 'src/lib/calculate-results';
 import { format } from 'date-fns';
-import { Popover } from 'react-bootstrap';
-
+import { Popover, OverlayTrigger } from 'react-bootstrap';
 
 export default function MoodTracker() {
   const router = useRouter();
@@ -21,7 +20,6 @@ export default function MoodTracker() {
 
   const handleAnswer = async (score: number) => {
     try {
-      // Replace 'userId' with the current user's identifier (from session or context)
       const userId = 1; // Adjust this as needed
 
       await submitAnswer({ userId, questionId: currentQuestion, score, date });
@@ -121,27 +119,32 @@ export default function MoodTracker() {
         <CardContent className="p-6">
           <div className="mb-6">
             <h2 className="text-lg font-medium mb-2">Select Date</h2>
-            <Popover>
-              <PopoverTrigger asChild>
-                <Button
-                  variant="outline"
-                  className="w-full justify-start text-left font-normal"
-                  aria-label="Select date"
-                >
-                  <CalendarIcon className="mr-2 h-4 w-4" />
-                  {date}
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-auto p-0">
-                <Calendar
-                  mode="single"
-                  selected={new Date(date)}
-                  onSelect={(newDate) => newDate && setDate(format(newDate, 'PPP'))}
-                  initialFocus
-                  aria-label="Calendar"
-                />
-              </PopoverContent>
-            </Popover>
+            <OverlayTrigger
+              trigger="click"
+              placement="bottom"
+              overlay={
+                <Popover id="popover-calendar">
+                  <Popover.Body>
+                    <Calendar
+                      mode="single"
+                      selected={new Date(date)}
+                      onSelect={(newDate) => newDate && setDate(format(newDate, 'PPP'))}
+                      initialFocus
+                      aria-label="Calendar"
+                    />
+                  </Popover.Body>
+                </Popover>
+              }
+            >
+              <Button
+                variant="outline"
+                className="w-full justify-start text-left font-normal"
+                aria-label="Select date"
+              >
+                <CalendarIcon className="mr-2 h-4 w-4" />
+                {date}
+              </Button>
+            </OverlayTrigger>
           </div>
 
           <div className="mt-8">
