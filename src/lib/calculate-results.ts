@@ -1,4 +1,4 @@
-// calculate-results.ts
+// src/lib/calculate-results.ts
 import { prisma } from "src/lib/prisma";
 
 export async function calculateResults(userId: string, responses: number[]) {

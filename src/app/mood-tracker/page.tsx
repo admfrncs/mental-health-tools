@@ -1,3 +1,4 @@
+// src/app/mood-tracker/page.tsx
 "use client";
 
 import { useState, useEffect } from "react";
@@ -98,4 +99,19 @@ export default function MoodTracker() {
                   </Button>
                 ))}
               </div>
-   
+            </>
+          ) : (
+            <div>
+              <h2 className="text-lg font-semibold mb-4">Results</h2>
+              <p>Section 1 Score: {results?.sectionScores[0]}</p>
+              <p>Section 2 Score: {results?.sectionScores[1]}</p>
+              <p>Section 3 Score: {results?.sectionScores[2]}</p>
+              <p>Total Score: {results?.overallScore}</p>
+              <Button onClick={startNewAssessment}>Start New Assessment</Button>
+            </div>
+          )}
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
