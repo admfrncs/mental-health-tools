@@ -135,4 +135,16 @@ export default function MoodTracker() {
                   </li>
                 ))}
               </ul>
+              <h3 className="font-semibold mt-4">Overall Score</h3>
+              <p>{results?.overallScore}</p>
+            </div>
+          )}
           
+          <div className="mt-8">
+            <Button onClick={startNewAssessment}>Start New Assessment</Button>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
