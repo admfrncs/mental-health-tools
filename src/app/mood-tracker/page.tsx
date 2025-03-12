@@ -52,11 +52,17 @@ export default function MoodTracker() {
           }),
         });
 
-    
+        // Handle error if the response is not successful
+        if (!res.ok) {
+          throw new Error("Failed to figure out the results");
+        }
 
         const data = await res.json();
 
-   
+        // Handle any error returned by the API
+        if (data.error) {
+          throw new Error(data.error);
+        }
 
         // Set the results state with the data from API
         setResults(data);
