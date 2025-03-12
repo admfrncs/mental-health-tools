@@ -6,7 +6,7 @@ import { prisma } from "src/lib/prisma";
 export async function POST(req: Request) {
   try {
     const { userId, responses, date } = await req.json();
-    
+
     if (!userId || !responses) {
       return NextResponse.json({ error: "Missing userId or responses" }, { status: 400 });
     }
