@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma"; // Ensure Prisma is set up correctly
+import { prisma } from "src/lib/prisma";
 
 // GET: Fetch all mood assessments
 export async function GET() {
@@ -7,7 +7,7 @@ export async function GET() {
     const results = await prisma.moodAssessment.findMany();
     return NextResponse.json(results);
   } catch (error) {
-    console.error("Error fetching results:", error);
+    console.error("Error fetching mood assessments:", error);
     return NextResponse.json({ error: "Server error" }, { status: 500 });
   }
 }
@@ -17,7 +17,7 @@ export async function POST(req: Request) {
   try {
     const { userId, questionId, answerId, date } = await req.json();
 
-    if (!userId || !questionId || !answerId) {
+    if (!userId || !questionId || !answerId || !date) {
       return NextResponse.json(
         { error: "Missing required fields" },
         { status: 400 }
@@ -35,7 +35,7 @@ export async function POST(req: Request) {
 
     return NextResponse.json(assessment);
   } catch (error) {
-    console.error("Error saving response:", error);
+    console.error("Error saving mood assessment:", error);
     return NextResponse.json({ error: "Server error" }, { status: 500 });
   }
 }

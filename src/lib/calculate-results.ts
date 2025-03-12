@@ -6,7 +6,7 @@ export async function calculateResults(userId: string) {
   }
 
   try {
-    // Retrieve all responses for the user
+    // Retrieve all responses for the user, including related question data
     const responses = await prisma.response.findMany({
       where: { userId },
       include: {
@@ -14,11 +14,11 @@ export async function calculateResults(userId: string) {
       },
     });
 
-    if (!responses.length) {
+    if (responses.length === 0) {
       throw new Error("No responses found for this user");
     }
 
-    // Assuming 3 sections, adjust as needed
+    // Adjust section count based on your assessment
     const sectionScores: number[] = [0, 0, 0];
     let totalScore = 0;
 
@@ -29,6 +29,7 @@ export async function calculateResults(userId: string) {
         return;
       }
 
+      // Assuming 4 questions per section, adjust if needed
       const sectionIndex = Math.floor((questionId - 1) / 4);
       if (sectionIndex < sectionScores.length) {
         sectionScores[sectionIndex] += response.score;
