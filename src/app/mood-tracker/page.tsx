@@ -140,4 +140,11 @@ export default function MoodTracker() {
             </div>
           )}
           
-          <div className="
+          <div className="mt-8">
+            <Button onClick={startNewAssessment}>Start New Assessment</Button>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
