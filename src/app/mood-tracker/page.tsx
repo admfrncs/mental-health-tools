@@ -1,17 +1,14 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from 'src/components/ui/button';
 import { Card, CardContent } from 'src/components/ui/card';
 import { sections, sectionDisplayNames, questions, getScoreRating } from 'src/lib/questions';
 import { toast } from 'react-toastify';
-import { useMutation } from '@tanstack/react-query';
-import { apiRequest } from 'src/lib/queryClient';
-import * as XLSX from 'xlsx';
-import { format } from 'date-fns';
 import { submitAnswer } from 'src/lib/submit-answer';
 import { calculateResults } from 'src/lib/calculate-results';
+import { format } from 'date-fns';
 
 export default function MoodTracker() {
   const router = useRouter();
@@ -30,7 +27,7 @@ export default function MoodTracker() {
       if (currentQuestion < questions.length - 1) {
         setCurrentQuestion(currentQuestion + 1);
       } else {
-        const results = await calculateResults();
+        const results = await calculateResults(userId);
         setResults(results);
         setShowResults(true);
       }
@@ -56,8 +53,6 @@ export default function MoodTracker() {
     const { sectionScores, overallScore } = results;
 
     try {
-      await apiRequest('POST', '/api/mood-assessments', { date, sectionScores, overallScore });
-
       const wb = XLSX.utils.book_new();
       const wsData = [
         ['Date', new Date().toISOString()],
