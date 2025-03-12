@@ -28,18 +28,17 @@ export default function MoodTracker() {
   const handleAnswer = async (score: number) => {
     try {
       const userId = 1; // Adjust as needed
-      console.log("Handling answer:", { userId, currentQuestion, score, date });
-
-      if (!userId || currentQuestion === undefined || score === undefined || !date) {
+      if (userId === null || currentQuestion === undefined || score === undefined || !date) {
         console.error("Missing required fields", { userId, currentQuestion, score, date });
         toast.error("Invalid response data. Please try again.");
         return;
       }
 
+      console.log("Submitting answer with:", { userId, questionId: currentQuestion, score, date });
       await submitAnswer({ userId, questionId: currentQuestion, score, date });
 
       if (currentQuestion < questions.length - 1) {
-        setCurrentQuestion(currentQuestion + 1);
+        setCurrentQuestion((prev) => prev + 1);
       } else {
         const results = await calculateResults(userId);
         setResults(results);
@@ -57,68 +56,6 @@ export default function MoodTracker() {
     setDate(format(new Date(), 'PPP'));
     router.push('/');
   };
-
-  const exportToExcel = async () => {
-    if (!results) {
-      toast.error("Please complete the assessment before exporting.");
-      return;
-    }
-
-    const { sectionScores, overallScore } = results;
-
-    try {
-      const wb = XLSX.utils.book_new();
-      const wsData = [
-        ['Date', new Date().toISOString()],
-        ['Overall Score', overallScore],
-        ...sectionScores.map((score, index) => [
-          `Section ${index + 1} Score`,
-          score,
-        ]),
-      ];
-
-      const ws = XLSX.utils.aoa_to_sheet(wsData);
-      XLSX.utils.book_append_sheet(wb, ws, 'Assessment Results');
-      XLSX.writeFile(wb, `mental-health-assessment-${new Date().toISOString()}.xlsx`);
-
-      toast.success("Assessment data exported successfully.");
-    } catch (error) {
-      toast.error("Failed to export assessment data.");
-    }
-  };
-
-  if (showResults && results) {
-    return (
-      <div className="min-h-screen bg-gradient-to-b from-background to-muted p-4">
-        <Card className="max-w-2xl mx-auto mt-8">
-          <CardContent className="p-6">
-            <h2 className="text-2xl font-bold mb-6">Assessment Results</h2>
-            <div className="space-y-4">
-              <div className="p-4 bg-primary/10 rounded-lg">
-                <h3 className="font-semibold">Overall Score: {results.overallScore}</h3>
-                <p className="text-sm text-muted-foreground">
-                  Rating: {getScoreRating(results.overallScore)}
-                </p>
-              </div>
-              {results.sectionScores.map((score, index) => (
-                <div key={index} className="p-4 bg-muted rounded-lg">
-                  <h4 className="font-medium">{sectionDisplayNames[index]}</h4>
-                  <p className="text-sm">Score: {score}</p>
-                  <p className="text-sm text-muted-foreground">
-                    Rating: {getScoreRating(score)}
-                  </p>
-                </div>
-              ))}
-            </div>
-            <div className="flex gap-4 mt-8">
-              <Button onClick={exportToExcel}>Export to Excel</Button>
-              <Button variant="outline" onClick={startNewAssessment}>Start New Assessment</Button>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-muted p-4">
