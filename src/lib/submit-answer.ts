@@ -33,3 +33,25 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     res.status(500).json({ error: 'Internal Server Error' });
   }
 }
+// Named export for submitAnswer
+export async function submitAnswer(userId: string, questionId: string, score: number, date: string) {
+    if (!userId || !questionId || score === undefined || !date) {
+      throw new Error('Missing required fields');
+    }
+  
+    try {
+      const response = await prisma.response.create({
+        data: {
+          userId,
+          questionId,
+          score,
+          date,
+        },
+      });
+  
+      return response;
+    } catch (error) {
+      console.error('Error storing response:', error);
+      throw new Error('Internal Server Error');
+    }
+  }
