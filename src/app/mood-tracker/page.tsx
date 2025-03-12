@@ -9,10 +9,8 @@ import { Popover, PopoverTrigger, PopoverContent } from "src/components/ui/popov
 import { CalendarIcon } from "lucide-react";
 import { sections, sectionDisplayNames, questions } from "src/lib/questions";
 import { toast } from "react-toastify";
-import { calculateResults } from "src/lib/calculate-results";
 import { format, parse } from "date-fns";
 
-// Assume userId is available through context or props
 export default function MoodTracker() {
   const router = useRouter();
   const [date, setDate] = useState<string>(format(new Date(), "PPP"));
@@ -38,9 +36,19 @@ export default function MoodTracker() {
         setCurrentQuestion((prev) => prev + 1);
       } else {
         console.log("Fetching results...");
-        const calculatedResults = await calculateResults(userId, updatedResponses);  // Pass userId here
-        setResults(calculatedResults);
-        setShowResults(true);
+        const response = await fetch("/api/calculate-results", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ userId }),
+        });
+        const data = await response.json();
+        if (data.error) {
+          console.error("Error calculating results:", data.error);
+          toast.error("Failed to fetch results.");
+        } else {
+          setResults(data);
+          setShowResults(true);
+        }
       }
     } catch (error) {
       console.error("Error submitting answer:", error);
