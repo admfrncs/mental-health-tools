@@ -40,7 +40,7 @@ export default function MoodTracker() {
       } else {
         console.log("Fetching results...");
         // Make API call to calculate results
-        const res = await fetch("/api/mood-assessments", {
+        const res = await fetch("src/api/mood-assessments", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
