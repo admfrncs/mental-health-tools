@@ -1,4 +1,3 @@
-// src/app/page.tsx
 "use client";
 
 import { useState, useEffect } from "react";
@@ -21,8 +20,8 @@ export default function MoodTracker() {
   const [showResults, setShowResults] = useState<boolean>(false);
   const [results, setResults] = useState<{ sectionScores: number[]; overallScore: number } | null>(null);
 
-  // Replace this with the actual userId
-  const userId = "userId_placeholder"; // You need to get this from context or props
+  // Retrieve actual userId from context or props
+  const userId = "userId_placeholder"; // Replace with actual logic to get userId, e.g. from context or props
 
   useEffect(() => {
     console.log("Initialized Date:", date);
@@ -30,10 +29,12 @@ export default function MoodTracker() {
 
   const handleAnswer = async (answerId: number) => {
     try {
+      // Update responses array with the selected answer
       const updatedResponses = [...responses];
       updatedResponses[currentQuestion] = answerId;
       setResponses(updatedResponses);
 
+      // Move to the next question or fetch results if it's the last question
       if (currentQuestion < questions.length - 1) {
         setCurrentQuestion((prev) => prev + 1);
       } else {
@@ -44,20 +45,27 @@ export default function MoodTracker() {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ userId }),
+          body: JSON.stringify({
+            userId,
+            responses: updatedResponses,
+            date, // Passing date in case you want to track it
+          }),
         });
 
+        // Handle error if the response is not successful
         if (!res.ok) {
           throw new Error("Failed to calculate results");
         }
 
         const data = await res.json();
 
+        // Handle any error returned by the API
         if (data.error) {
           throw new Error(data.error);
         }
 
-        setResults(data);  // Set results from API response
+        // Set the results state with the data from API
+        setResults(data);
         setShowResults(true);
       }
     } catch (error) {
@@ -107,22 +115,34 @@ export default function MoodTracker() {
               <ul>
                 {questions[currentQuestion]?.options.map((option, idx) => (
                   <li key={idx}>
-                    <button onClick={() => handleAnswer(option.id)}>{option.text}</button>
+                    <button
+                      onClick={() => handleAnswer(option.id)}
+                      className="text-blue-600 hover:underline"
+                    >
+                      {option.text}
+                    </button>
                   </li>
                 ))}
               </ul>
             </>
           ) : (
             <div>
-              <h3>Section Scores</h3>
+              <h3 className="font-semibold">Section Scores</h3>
               <ul>
                 {results?.sectionScores.map((score, index) => (
-                  <li key={index}>Section {index + 1}: {score}</li>
+                  <li key={index}>
+                    Section {index + 1}: {score}
+                  </li>
                 ))}
               </ul>
-              <h3>Total Score</h3>
+              <h3 className="font-semibold">Total Score</h3>
               <p>{results?.overallScore}</p>
-              <button onClick={startNewAssessment}>Start New Assessment</button>
+              <button
+                onClick={startNewAssessment}
+                className="mt-4 py-2 px-4 bg-blue-600 text-white rounded-md"
+              >
+                Start New Assessment
+              </button>
             </div>
           )}
         </CardContent>
