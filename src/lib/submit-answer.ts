@@ -8,21 +8,21 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   // Destructure the request body
-  const { userId, questionId, score, date } = req.body;
+  const { userId, questionId, answerId, date } = req.body;
 
   // Validate required fields
-  if (!userId || !questionId || score === undefined || !date) {
+  if (!userId || !questionId || !answerId || !date) {
     return res.status(400).json({ error: 'Missing required fields' });
   }
 
   try {
     // Store the response in the database using Prisma
-    const response = await prisma.response.create({
+    const response = await prisma.userResponse.create({
       data: {
         userId,
         questionId,
-        score,
-        date,
+        answerId,
+        date: new Date(date), // Convert date to Date object if it's a string
       },
     });
 
@@ -33,29 +33,28 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     res.status(500).json({ error: 'Internal Server Error' });
   }
 }
+
 // Named export for submitAnswer
-export async function submitAnswer(userId: string, questionId: string, score: number, date: string) {
-    if (!userId || !questionId || score === undefined || !date) {
-      throw new Error('Missing required fields');
-    }
-  
-    try {
-      const response = await prisma.response.create({
-        data: {
-          userId,
-          questionId,
-          score,
-          date: new Date(date), // Convert date to Date object if it's a string
-        },
-      });
-      
-      console.log('Response:', response); // Log the response to check data
-      return response;
-      
-  
-      return response;
-    } catch (error) {
-      console.error('Error storing response:', error);
-      throw new Error('Internal Server Error');
-    }
+export async function submitAnswer(userId: string, questionId: string, answerId: string, date: string) {
+  if (!userId || !questionId || !answerId || !date) {
+    throw new Error('Missing required fields');
   }
+
+  try {
+    const response = await prisma.userResponse.create({
+      data: {
+        userId: parseInt(userId), // Ensure it's the correct type if coming from a string
+        questionId: parseInt(questionId),
+        answerId: parseInt(answerId),
+        date: new Date(date), // Convert date to Date object if it's a string
+      },
+    });
+    
+    console.log('Response:', response); // Log the response to check data
+    return response;
+    
+  } catch (error) {
+    console.error('Error storing response:', error);
+    throw new Error('Internal Server Error');
+  }
+}

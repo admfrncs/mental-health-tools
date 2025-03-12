@@ -1,43 +1,40 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-datasource db {
-  provider = "sqlite"
-  url      = "file:./db.sqlite"
+model User {
+  id                Int                      @id @default(autoincrement()) // Unique identifier for the user
+  username          String                   @unique
+  email             String                   @unique
+  passwordHash      String
+  responses         UserResponse[]           // Relation to the UserResponse model
 }
 
-generator client {
-  provider = "prisma-client-js"
+model Section {
+  id          Int          @id @default(autoincrement())  // Unique identifier for the section
+  name        String       // Name of the section (e.g., Mood & Emotional Regulation)
+  questions   Question[]   // One-to-many relation to the Question model
 }
-
-model Response {
-  id        String   @id @default(cuid())
-  userId    String
-  questionId String
-  score     Int
-  date      DateTime
-  user      User     @relation(fields: [userId], references: [id])
-  question  Question @relation(fields: [questionId], references: [id])
-}
-
 
 model Question {
-  id      Int    @id @default(autoincrement())
-  text    String
-  options Option[]
+  id          Int          @id @default(autoincrement())  // Unique identifier for the question
+  text        String       // The text of the question (e.g., "How would you rate your overall mood?")
+  sectionId   Int          // Foreign key to Section
+  section     Section     @relation(fields: [sectionId], references: [id])  // Relation to the Section model
+  answers     Answer[]     // One-to-many relation to the Answer model
 }
 
-model Option {
-  id         Int      @id @default(autoincrement())
-  text       String
-  score      Int
-  question   Question @relation(fields: [questionId], references: [id])
-  questionId Int
+model Answer {
+  id          Int          @id @default(autoincrement())  // Unique identifier for the answer
+  text        String       // The answer text (e.g., "Very Positive", "Somewhat Positive", etc.)
+  score       Int          // The score for the answer (1 to 5)
+  questionId  Int          // Foreign key to Question
+  question    Question     @relation(fields: [questionId], references: [id]) // Relation to the Question model
 }
 
-model MoodAssessment {
-  id    String  @id @default(uuid()) // Unique UUID for each mood assessment
-  mood  String  // Description of the mood (e.g., "happy", "sad", etc.)
-  score Int     // Score associated with the mood
-  date  DateTime @default(now()) // Timestamp when the assessment was created
+model UserResponse {
+  id          Int          @id @default(autoincrement())  // Unique identifier for the user response
+  userId      Int          // Foreign key to User
+  questionId  Int          // Foreign key to Question
+  answerId    Int          // Foreign key to Answer (selected answer by user)
+  user        User         @relation(fields: [userId], references: [id]) // Relation to the User model
+  question    Question     @relation(fields: [questionId], references: [id]) // Relation to the Question model
+  answer      Answer       @relation(fields: [answerId], references: [id])  // Relation to the Answer model
 }
+
