@@ -1,36 +1,29 @@
-import { NextApiRequest, NextApiResponse } from 'next';
-import prisma from 'src/lib/prisma';
+import { NextResponse } from "next/server";
+import prisma from "src/lib/prisma";
 
-// Only allow POST requests
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  // Validate the method
-  if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Method Not Allowed' });
-  }
-
-  // Destructure the request body
-  const { userId, questionId, score, date } = req.body;
-
-  // Validate required fields
-  if (!userId || !questionId || score === undefined || !date) {
-    return res.status(400).json({ error: 'Missing required fields' });
-  }
-
+// Handle POST request to store user response
+export async function POST(request: Request) {
   try {
-    // Store the response in the database using Prisma
+    const { userId, questionId, score, date } = await request.json();
+
+    // Validate required fields
+    if (!userId || !questionId || score === undefined || !date) {
+      return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
+    }
+
+    // Store response in the database using Prisma
     const response = await prisma.userResponse.create({
       data: {
-        userId: parseInt(userId), // Ensure it's the correct type
+        userId: parseInt(userId),
         questionId: parseInt(questionId),
         score: parseInt(score),
-        date: new Date(date), // Convert date to Date object if it's a string
+        date: new Date(date),
       },
     });
 
-    // Respond with the created response
-    res.status(200).json(response);
+    return NextResponse.json(response, { status: 201 });
   } catch (error) {
-    console.error('Error storing response:', error);
-    res.status(500).json({ error: 'Internal Server Error' });
+    console.error("Error storing response:", error);
+    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
   }
 }
