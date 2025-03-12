@@ -28,7 +28,7 @@ export default function MoodTracker() {
   const handleAnswer = async (score: number) => {
     try {
       const userId = 1; // Adjust as needed
-      if (userId === undefined || currentQuestion === undefined || score === undefined || !date) {
+      if (!userId || currentQuestion === undefined || score === undefined || !date) {
         console.error("Missing required fields:", { userId, currentQuestion, score, date });
         toast.error("Invalid response data. Please try again.");
         return;
@@ -89,9 +89,9 @@ export default function MoodTracker() {
           </div>
           <div className="mt-8">
             <p className="text-sm text-muted-foreground mb-2">Section: {sections[Math.floor(currentQuestion / 4)]}</p>
-            <h3 className="text-xl font-semibold mb-4">{questions[currentQuestion]?.text}</h3>
+            <h3 className="text-xl font-semibold mb-4">{questions[currentQuestion]?.text || 'Question not available'}</h3>
             <div className="grid gap-3">
-              {questions[currentQuestion]?.options.map((option, index) => (
+              {questions[currentQuestion]?.options?.map((option, index) => (
                 <Button key={index} variant="outline" className="justify-start h-auto py-3" onClick={() => handleAnswer(option.score)}>
                   {option.text}
                 </Button>
