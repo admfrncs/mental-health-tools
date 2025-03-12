@@ -9,10 +9,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   // Destructure the request body
-  const { userId, questionId, answerId, date } = req.body;
+  const { userId, questionId, score, date } = req.body;
 
   // Validate required fields
-  if (!userId || !questionId || !answerId || !date) {
+  if (!userId || !questionId || score === undefined || !date) {
     return res.status(400).json({ error: 'Missing required fields' });
   }
 
@@ -22,7 +22,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       data: {
         userId: parseInt(userId), // Ensure it's the correct type
         questionId: parseInt(questionId),
-        answerId: parseInt(answerId),
+        score: parseInt(score),
         date: new Date(date), // Convert date to Date object if it's a string
       },
     });
