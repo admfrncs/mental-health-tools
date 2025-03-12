@@ -1,9 +1,9 @@
-// submit-answer.ts
 import { NextApiRequest, NextApiResponse } from 'next';
 import prisma from 'src/lib/prisma';
 
+// Only allow POST requests
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  // Only allow POST requests
+  // Validate the method
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method Not Allowed' });
   }
@@ -20,9 +20,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     // Store the response in the database using Prisma
     const response = await prisma.userResponse.create({
       data: {
-        userId,
-        questionId,
-        answerId,
+        userId: parseInt(userId), // Ensure it's the correct type
+        questionId: parseInt(questionId),
+        answerId: parseInt(answerId),
         date: new Date(date), // Convert date to Date object if it's a string
       },
     });
@@ -32,30 +32,5 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   } catch (error) {
     console.error('Error storing response:', error);
     res.status(500).json({ error: 'Internal Server Error' });
-  }
-}
-
-// Named export for submitAnswer
-export async function submitAnswer(userId: number, questionId: number, answerId: number, date: string) {
-  if (!userId || !questionId || !answerId || !date) {
-    throw new Error('Missing required fields');
-  }
-
-  try {
-    const response = await prisma.userResponse.create({
-      data: {
-        userId,
-        questionId,
-        answerId,
-        date: new Date(date), // Convert date to Date object if it's a string
-      },
-    });
-    
-    console.log('Response:', response); // Log the response to check data
-    return response;
-    
-  } catch (error) {
-    console.error('Error storing response:', error);
-    throw new Error('Internal Server Error');
   }
 }
