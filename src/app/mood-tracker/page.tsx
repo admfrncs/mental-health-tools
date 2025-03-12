@@ -9,7 +9,6 @@ import { Popover, PopoverTrigger, PopoverContent } from "src/components/ui/popov
 import { CalendarIcon } from "lucide-react";
 import { sections, sectionDisplayNames, questions } from "src/lib/questions";
 import { toast } from "react-toastify";
-import { calculateResults } from "src/lib/calculate-results";
 import { format, parse } from "date-fns";
 
 export default function MoodTracker() {
@@ -18,7 +17,7 @@ export default function MoodTracker() {
   const [currentQuestion, setCurrentQuestion] = useState<number>(0);
   const [responses, setResponses] = useState<number[]>(new Array(questions.length).fill(0));
   const [showResults, setShowResults] = useState<boolean>(false);
-  const [results, setResults] = useState<{ sectionScores: number[]; overallScore: number } | null>(null);
+  const [results, setResults] = useState<{ sectionScores: number[]; totalScore: number } | null>(null);
 
   useEffect(() => {
     console.log("Initialized Date:", date);
@@ -33,8 +32,25 @@ export default function MoodTracker() {
       if (currentQuestion < questions.length - 1) {
         setCurrentQuestion((prev) => prev + 1);
       } else {
+        console.log("Submitting responses...");
+        const userId = "test-user-id"; // Replace with actual user ID logic
+
+        await fetch("/api/route", {
+          method: "POST",
+          body: JSON.stringify({ userId, responses: updatedResponses }),
+          headers: { "Content-Type": "application/json" },
+        });
+
         console.log("Fetching results...");
-        const calculatedResults = calculateResults(updatedResponses);
+        const res = await fetch("/api/route", {
+          method: "POST",
+          body: JSON.stringify({ userId }),
+          headers: { "Content-Type": "application/json" },
+        });
+
+        if (!res.ok) throw new Error("Failed to fetch results");
+
+        const calculatedResults = await res.json();
         setResults(calculatedResults);
         setShowResults(true);
       }
@@ -79,34 +95,21 @@ export default function MoodTracker() {
 
           {!showResults ? (
             <>
-              <h2 className="text-lg font-semibold mb-4">
-                {questions[currentQuestion].text}
-              </h2>
-              <div className="flex flex-col gap-2">
-                {questions[currentQuestion].options.map((option, index) => (
-                  <Button
-                    key={index}
-                    variant={responses[currentQuestion] === option.score ? "default" : "outline"}
-                    className="text-left"
-                    onClick={() => handleAnswer(option.score)}
-                  >
-                    {option.text}
-                  </Button>
-                ))}
-              </div>
+              <h2 className="text-lg font-semibold mb-4">{questions[currentQuestion].text}</h2>
+              {questions[currentQuestion].options.map((option, index) => (
+                <Button key={index} variant="outline" onClick={() => handleAnswer(option.score)}>
+                  {option.text}
+                </Button>
+              ))}
             </>
           ) : (
             <>
               <h2 className="text-lg font-semibold mb-4">Results</h2>
               {sections.map((section, index) => (
-                <p key={index}>
-                  {sectionDisplayNames[index]}: {results?.sectionScores[index]}
-                </p>
+                <p key={index}>{sectionDisplayNames[index]}: {results?.sectionScores[index]}</p>
               ))}
-              <p className="font-bold">Overall Score: {results?.overallScore}</p>
-              <Button className="mt-4" onClick={startNewAssessment}>
-                Start New Assessment
-              </Button>
+              <p className="font-bold">Overall Score: {results?.totalScore}</p>
+              <Button onClick={startNewAssessment}>Start New Assessment</Button>
             </>
           )}
         </CardContent>
