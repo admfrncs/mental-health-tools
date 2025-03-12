@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from 'src/components/ui/button';
 import { Card, CardContent } from 'src/components/ui/card';
@@ -11,19 +11,30 @@ import { sections, sectionDisplayNames, questions, getScoreRating } from 'src/li
 import { toast } from 'react-toastify';
 import { submitAnswer } from 'src/lib/submit-answer';
 import { calculateResults } from 'src/lib/calculate-results';
-import { format } from 'date-fns';
+import { format, parse } from 'date-fns';
 import { Popover, OverlayTrigger } from 'react-bootstrap';
 
 export default function MoodTracker() {
   const router = useRouter();
   const [date, setDate] = useState<string>(format(new Date(), 'PPP'));
-  const [currentQuestion, setCurrentQuestion] = useState(0);
-  const [showResults, setShowResults] = useState(false);
+  const [currentQuestion, setCurrentQuestion] = useState<number>(0);
+  const [showResults, setShowResults] = useState<boolean>(false);
   const [results, setResults] = useState<{ sectionScores: number[]; overallScore: number } | null>(null);
+
+  useEffect(() => {
+    console.log("Initialized Date:", date);
+  }, [date]);
 
   const handleAnswer = async (score: number) => {
     try {
-      const userId = 1; // Adjust this as needed
+      const userId = 1; // Adjust as needed
+      console.log("Handling answer:", { userId, currentQuestion, score, date });
+
+      if (!userId || currentQuestion === undefined || score === undefined || !date) {
+        console.error("Missing required fields", { userId, currentQuestion, score, date });
+        toast.error("Invalid response data. Please try again.");
+        return;
+      }
 
       await submitAnswer({ userId, questionId: currentQuestion, score, date });
 
@@ -77,23 +88,19 @@ export default function MoodTracker() {
   };
 
   if (showResults && results) {
-    const { sectionScores, overallScore } = results;
-
     return (
       <div className="min-h-screen bg-gradient-to-b from-background to-muted p-4">
         <Card className="max-w-2xl mx-auto mt-8">
           <CardContent className="p-6">
             <h2 className="text-2xl font-bold mb-6">Assessment Results</h2>
-
             <div className="space-y-4">
               <div className="p-4 bg-primary/10 rounded-lg">
-                <h3 className="font-semibold">Overall Score: {overallScore}</h3>
+                <h3 className="font-semibold">Overall Score: {results.overallScore}</h3>
                 <p className="text-sm text-muted-foreground">
-                  Rating: {getScoreRating(overallScore)}
+                  Rating: {getScoreRating(results.overallScore)}
                 </p>
               </div>
-
-              {sectionScores.map((score, index) => (
+              {results.sectionScores.map((score, index) => (
                 <div key={index} className="p-4 bg-muted rounded-lg">
                   <h4 className="font-medium">{sectionDisplayNames[index]}</h4>
                   <p className="text-sm">Score: {score}</p>
@@ -103,12 +110,9 @@ export default function MoodTracker() {
                 </div>
               ))}
             </div>
-
             <div className="flex gap-4 mt-8">
               <Button onClick={exportToExcel}>Export to Excel</Button>
-              <Button variant="outline" onClick={startNewAssessment}>
-                Start New Assessment
-              </Button>
+              <Button variant="outline" onClick={startNewAssessment}>Start New Assessment</Button>
             </div>
           </CardContent>
         </Card>
@@ -130,7 +134,7 @@ export default function MoodTracker() {
                   <Popover.Body>
                     <Calendar
                       mode="single"
-                      selected={new Date(date)}
+                      selected={parse(date, 'PPP', new Date())}
                       onSelect={(newDate) => newDate && setDate(format(newDate, 'PPP'))}
                       initialFocus
                       aria-label="Calendar"
@@ -139,34 +143,18 @@ export default function MoodTracker() {
                 </Popover>
               }
             >
-              <Button
-                variant="outline"
-                className="w-full justify-start text-left font-normal"
-                aria-label="Select date"
-              >
+              <Button variant="outline" className="w-full justify-start text-left font-normal" aria-label="Select date">
                 <CalendarIcon className="mr-2 h-4 w-4" />
                 {date}
               </Button>
             </OverlayTrigger>
           </div>
-
           <div className="mt-8">
-            <p className="text-sm text-muted-foreground mb-2">
-              Section: {sections[Math.floor(currentQuestion / 4)]}
-            </p>
-            <h3 className="text-xl font-semibold mb-4">
-              {questions[currentQuestion].text}
-            </h3>
-
+            <p className="text-sm text-muted-foreground mb-2">Section: {sections[Math.floor(currentQuestion / 4)]}</p>
+            <h3 className="text-xl font-semibold mb-4">{questions[currentQuestion]?.text}</h3>
             <div className="grid gap-3">
-              {questions[currentQuestion].options.map((option, index) => (
-                <Button
-                  key={index}
-                  variant="outline"
-                  className="justify-start h-auto py-3"
-                  onClick={() => handleAnswer(option.score)}
-                  aria-label={`Select answer: ${option.text}`}
-                >
+              {questions[currentQuestion]?.options.map((option, index) => (
+                <Button key={index} variant="outline" className="justify-start h-auto py-3" onClick={() => handleAnswer(option.score)}>
                   {option.text}
                 </Button>
               ))}
