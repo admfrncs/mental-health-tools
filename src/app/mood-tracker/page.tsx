@@ -9,7 +9,7 @@ import { PopoverTrigger, PopoverContent } from 'src/components/ui/popover';
 import { CalendarIcon } from 'lucide-react';
 import { sections, sectionDisplayNames, questions, getScoreRating } from 'src/lib/questions';
 import { toast } from 'react-toastify';
-import { handler } from 'src/lib/submit-answer'; // Adjusted import
+import handler from 'src/lib/submit-answer';
 import { calculateResults } from 'src/lib/calculate-results';
 import { format, parse } from 'date-fns';
 import { Popover, OverlayTrigger } from 'react-bootstrap';
