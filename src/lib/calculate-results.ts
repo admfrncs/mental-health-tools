@@ -1,20 +1,21 @@
+// calculate-results.ts
 import { prisma } from "src/lib/prisma";
 
-export async function calculateResults(userId: string) {
+export async function calculateResults(userId: string, responses: number[]) {
   if (!userId) {
     throw new Error("Missing userId");
   }
 
   try {
     // Retrieve all responses for the user, including related question data
-    const responses = await prisma.response.findMany({
+    const userResponses = await prisma.response.findMany({
       where: { userId },
       include: {
         question: true,
       },
     });
 
-    if (responses.length === 0) {
+    if (userResponses.length === 0) {
       throw new Error("No responses found for this user");
     }
 
@@ -22,7 +23,7 @@ export async function calculateResults(userId: string) {
     const sectionScores: number[] = [0, 0, 0];
     let totalScore = 0;
 
-    responses.forEach((response) => {
+    userResponses.forEach((response) => {
       const questionId = Number(response.question.id);
       if (isNaN(questionId)) {
         console.warn(`Invalid question ID: ${response.question.id}`);
@@ -38,7 +39,7 @@ export async function calculateResults(userId: string) {
       totalScore += response.score;
     });
 
-    return { sectionScores, totalScore };
+    return { sectionScores, overallScore: totalScore };
   } catch (error) {
     console.error("Error calculating results:", error);
     throw new Error("Failed to calculate results");
