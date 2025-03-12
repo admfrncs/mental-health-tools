@@ -11,12 +11,15 @@ generator client {
 }
 
 model Response {
-  id         Int      @id @default(autoincrement())
-  userId     String   // User ID to identify the user
-  questionId Int      // The question this answer relates to
-  answer     Int      // The score for this answer
-  createdAt  DateTime @default(now())
+  id        String   @id @default(cuid())
+  userId    String
+  questionId String
+  score     Int
+  date      DateTime
+  user      User     @relation(fields: [userId], references: [id])
+  question  Question @relation(fields: [questionId], references: [id])
 }
+
 
 model Question {
   id      Int    @id @default(autoincrement())
