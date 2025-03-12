@@ -28,8 +28,8 @@ export default function MoodTracker() {
   const handleAnswer = async (score: number) => {
     try {
       const userId = 1; // Adjust as needed
-      if (userId === null || currentQuestion === undefined || score === undefined || !date) {
-        console.error("Missing required fields", { userId, currentQuestion, score, date });
+      if (userId === undefined || currentQuestion === undefined || score === undefined || !date) {
+        console.error("Missing required fields:", { userId, currentQuestion, score, date });
         toast.error("Invalid response data. Please try again.");
         return;
       }
@@ -40,6 +40,7 @@ export default function MoodTracker() {
       if (currentQuestion < questions.length - 1) {
         setCurrentQuestion((prev) => prev + 1);
       } else {
+        console.log("Fetching results...");
         const results = await calculateResults(userId);
         setResults(results);
         setShowResults(true);
