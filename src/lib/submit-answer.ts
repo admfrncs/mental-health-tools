@@ -45,9 +45,13 @@ export async function submitAnswer(userId: string, questionId: string, score: nu
           userId,
           questionId,
           score,
-          date,
+          date: new Date(date), // Convert date to Date object if it's a string
         },
       });
+      
+      console.log('Response:', response); // Log the response to check data
+      return response;
+      
   
       return response;
     } catch (error) {
