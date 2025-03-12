@@ -8,10 +8,11 @@ datasource db {
 }
 
 model User {
-  id        Int             @id @default(autoincrement())
-  email     String          @unique
-  name      String?
-  assessments MoodAssessment[]
+  id            Int              @id @default(autoincrement())
+  email         String           @unique
+  name          String?
+  assessments   MoodAssessment[]
+  responses     Response[]
 }
 
 model MoodAssessment {
@@ -21,4 +22,27 @@ model MoodAssessment {
   questionId Int
   answerId   Int
   date       DateTime
+}
+
+model Question {
+  id        Int      @id @default(autoincrement())
+  text      String
+  options   Option[]
+}
+
+model Option {
+  id        Int      @id @default(autoincrement())
+  text      String
+  questionId Int
+  question  Question @relation(fields: [questionId], references: [id])
+}
+
+model Response {
+  id         Int      @id @default(autoincrement())
+  userId     Int
+  questionId Int
+  score      Int
+  date       DateTime
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  question   Question @relation(fields: [questionId], references: [id])
 }
