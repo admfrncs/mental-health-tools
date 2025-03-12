@@ -1,6 +1,6 @@
 import { prisma } from "src/lib/prisma";
 
-// Calculate results based on the responses for a given user
+// Function to calculate results based on the user's responses
 export async function calculateResults(userId: string) {
   if (!userId) {
     throw new Error("Missing userId");

@@ -102,4 +102,28 @@ export default function MoodTracker() {
           {!showResults ? (
             <>
               <h2 className="text-lg font-semibold mb-4">
-                {ques
+                {sections[currentQuestion]}
+              </h2>
+              {/* Render Question */}
+              <div>
+                <h3>{questions[currentQuestion]}</h3>
+                {/* Options for answering */}
+                <Button onClick={() => handleAnswer(1)}>Answer 1</Button>
+                <Button onClick={() => handleAnswer(2)}>Answer 2</Button>
+              </div>
+            </>
+          ) : (
+            <>
+              <h2 className="text-lg font-semibold mb-4">Results</h2>
+              <div>
+                <p>Section Scores: {results?.sectionScores.join(", ")}</p>
+                <p>Total Score: {results?.overallScore}</p>
+                <Button onClick={startNewAssessment}>Start New Assessment</Button>
+              </div>
+            </>
+          )}
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
