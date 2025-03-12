@@ -1,28 +1,35 @@
-// src/lib/submit-answer.ts
+import { NextApiRequest, NextApiResponse } from 'next';
+import prisma from 'src/lib/prisma';
 
-export async function submitAnswer(userId: string, questionId: string, score: number, date: string) {
-    try {
-      // Make a POST request to the API route
-      const response = await fetch('/api/submit-answer', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ userId, questionId, score, date }),
-      });
-  
-      // Handle the response from the API
-      if (response.ok) {
-        const data = await response.json();
-        return data; // Return the response from the server (i.e., the stored answer)
-      } else {
-        const errorData = await response.json();
-        console.error('Error submitting answer:', errorData.error);
-        return null; // Return null if there was an error
-      }
-    } catch (error) {
-      console.error('Error during submitAnswer:', error);
-      return null; // Return null if the fetch fails
-    }
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+  // Only allow POST requests
+  if (req.method !== 'POST') {
+    return res.status(405).json({ error: 'Method Not Allowed' });
   }
-  
+
+  // Destructure the request body
+  const { userId, questionId, score, date } = req.body;
+
+  // Validate required fields
+  if (!userId || !questionId || score === undefined || !date) {
+    return res.status(400).json({ error: 'Missing required fields' });
+  }
+
+  try {
+    // Store the response in the database using Prisma
+    const response = await prisma.response.create({
+      data: {
+        userId,
+        questionId,
+        score,
+        date,
+      },
+    });
+
+    // Respond with the created response
+    res.status(200).json(response);
+  } catch (error) {
+    console.error('Error storing response:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+}
