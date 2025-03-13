@@ -1,13 +1,8 @@
 import * as React from "react"
-
 import { cn } from "src/lib/utils"
 
-function Textarea(props: React.TextareaHTMLAttributes<HTMLTextAreaElement>) {
-  return <textarea {...props} />;
-}
-
-
-const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
+// Using `forwardRef` to properly handle refs and passing props
+const Textarea = React.forwardRef<HTMLTextAreaElement, React.TextareaHTMLAttributes<HTMLTextAreaElement>>(
   ({ className, ...props }, ref) => {
     return (
       <textarea
@@ -21,6 +16,7 @@ const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
     )
   }
 )
-Textarea.displayName = "Textarea"
+
+Textarea.displayName = "Textarea" // Set display name for better debugging in React DevTools
 
 export { Textarea }
