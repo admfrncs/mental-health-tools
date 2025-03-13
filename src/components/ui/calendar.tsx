@@ -52,8 +52,8 @@ function Calendar({
         ...classNames, // Ensures any passed classNames are applied
       }}
       components={{
-        // Corrected Button implementation instead of NavButton
-        Button: ({ next, ...props }) => {
+        // Corrected Button implementation with next/previous typing
+        Button: ({ next, ...props }: { next?: boolean }) => {
           return next ? (
             <ChevronRight {...props} className="h-4 w-4" />
           ) : (
