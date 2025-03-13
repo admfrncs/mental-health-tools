@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { SymptomAssessment } from "src/lib/types";
+import { SymptomAssessment } from "src/lib/type";
 import { v4 as uuidv4 } from "uuid";
 
 // Temporary in-memory storage (replace with a database in production)
