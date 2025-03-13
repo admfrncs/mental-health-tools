@@ -2,16 +2,17 @@
 import { NextResponse } from "next/server";
 import { NextApiRequest, NextApiResponse } from 'next';
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+// Default handler for POST requests
+export async function POST(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === 'POST') {
     try {
       const { responses, date } = req.body;
 
-      // Calculate scores
+      // Calculate section and overall scores
       const sectionScores = calculateSectionScores(responses);
       const overallScore = calculateOverallScore(responses);
 
-      // Respond with the calculated scores
+      // Respond with calculated scores
       return res.status(200).json({
         sectionScores,
         overallScore
@@ -25,12 +26,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 }
 
+// Calculate section scores (dummy calculation, adjust as needed)
 function calculateSectionScores(responses: number[]) {
-  // Dummy calculation for section scores
+  // Example of summing the scores from all responses
   return [responses.reduce((a, b) => a + b, 0)];
 }
 
+// Calculate overall score (dummy calculation, adjust as needed)
 function calculateOverallScore(responses: number[]) {
-  // Dummy calculation for overall score
   return responses.reduce((a, b) => a + b, 0);
 }
