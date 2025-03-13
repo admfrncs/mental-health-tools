@@ -7,11 +7,10 @@ import { Card, CardContent } from "src/components/ui/card";
 import { Calendar } from "src/components/ui/calendar";
 import { Popover, PopoverTrigger, PopoverContent } from "src/components/ui/popover";
 import { CalendarIcon } from "lucide-react";
-import { sections, sectionDisplayNames, questions } from "src/lib/questions";
+import { questions } from "src/lib/questions";
 import { toast } from "react-toastify";
 import { format, parse } from "date-fns";
 
-// Assume userId is available through context or props
 export default function MoodTracker() {
   const router = useRouter();
   const [date, setDate] = useState<string>(format(new Date(), "PPP"));
@@ -20,8 +19,7 @@ export default function MoodTracker() {
   const [showResults, setShowResults] = useState<boolean>(false);
   const [results, setResults] = useState<{ sectionScores: number[]; overallScore: number } | null>(null);
 
-  // Retrieve actual userId from context or props
-  const userId = "userId_placeholder"; // Replace with actual logic to get userId, e.g. from context or props
+  const userId = "userId_placeholder"; // Replace with actual logic to get userId
 
   useEffect(() => {
     console.log("Initialized Date:", date);
@@ -33,12 +31,10 @@ export default function MoodTracker() {
       updatedResponses[currentQuestion] = answerId;
       setResponses(updatedResponses);
 
-      console.log("Updated Responses:", updatedResponses); // Log the updated responses before sending to API
-
       if (currentQuestion < questions.length - 1) {
         setCurrentQuestion((prev) => prev + 1);
       } else {
-        console.log("Fetching results...");
+        // Send responses to the API for calculation
         const res = await fetch("/api/mood-assessments", {
           method: "POST",
           headers: {
@@ -56,8 +52,6 @@ export default function MoodTracker() {
         }
 
         const data = await res.json();
-
-        console.log("API Response:", data); // Log the response from the API
 
         if (data.error) {
           throw new Error(data.error);
