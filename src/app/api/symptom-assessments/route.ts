@@ -3,7 +3,7 @@ import { SymptomAssessment, SelectedSymptom } from "src/lib/types";
 import { v4 as uuidv4 } from "uuid";
 
 // Temporary in-memory storage (replace with a database in production)
-let savedAssessments: SymptomAssessment[] = [];
+const savedAssessments: SymptomAssessment[] = [];
 
 export async function POST(req: Request) {
   try {
