@@ -1,4 +1,4 @@
-import { SymptomCategory, SeverityLevel } from './types';  // Import the types
+import { SymptomCategory, SeverityLevel } from './type';  // Import the types
 
 export const symptomCategories: SymptomCategory[] = [
   {
