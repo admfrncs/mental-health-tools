@@ -1,10 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import { questions, sectionDisplayNames, calculateSectionScores } from "src/lib/questions";
+import { useRouter } from "next/navigation";
 import { Button } from "src/components/ui/button";
+import { Card, CardContent } from "src/components/ui/card";
+import { questions, sectionDisplayNames, calculateSectionScores } from "src/lib/questions";
 
 export default function MoodTracker() {
+  const router = useRouter();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [responses, setResponses] = useState<number[]>(Array(questions.length).fill(0));
   const [completed, setCompleted] = useState(false);
@@ -31,21 +34,26 @@ export default function MoodTracker() {
     const totalScore = sectionScores.reduce((a, b) => a + b, 0);
 
     return (
-      <div className="p-4">
-        <h2 className="text-xl font-bold">Results</h2>
-        <ul className="mt-2">
-          {sectionScores.map((score, index) => (
-            <li key={index} className="mt-2">
-              {sectionDisplayNames[index]}: {score}
-            </li>
-          ))}
-        </ul>
-        <p className="mt-4 font-bold">Total Score: {totalScore}</p>
-        <Button className="mt-4" onClick={() => {
-          setCurrentIndex(0);
-          setResponses(Array(questions.length).fill(0));
-          setCompleted(false);
-        }}>Restart</Button>
+      <div className="min-h-screen bg-gradient-to-b from-background to-muted p-4">
+        <Card className="max-w-2xl mx-auto mt-8">
+          <CardContent className="p-6">
+            <h2 className="text-2xl font-bold mb-6">Mood Assessment Results</h2>
+            <ul className="mb-4">
+              {sectionScores.map((score, index) => (
+                <li key={index} className="mb-2">
+                  <strong>{sectionDisplayNames[index]}:</strong> {score}
+                </li>
+              ))}
+            </ul>
+            <p className="font-bold mb-4">Total Score: {totalScore}</p>
+
+            <div className="flex gap-4">
+              <Button variant="outline" onClick={() => router.push("/")}>
+                Start New Assessment
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
       </div>
     );
   }
@@ -54,18 +62,22 @@ export default function MoodTracker() {
   const progress = ((currentIndex + 1) / questions.length) * 100;
 
   return (
-    <div className="p-4">
-      <div className="mb-4 h-2 bg-gray-200 rounded-full">
-        <div className="h-2 bg-blue-500 rounded-full" style={{ width: `${progress}%` }}></div>
-      </div>
-      <h2 className="text-lg font-bold mb-2">{currentQuestion.text}</h2>
-      <div className="space-y-2">
-        {currentQuestion.options.map((option, index) => (
-          <Button key={index} className="w-full" onClick={() => handleAnswer(option.score)}>
-            {option.text}
-          </Button>
-        ))}
-      </div>
+    <div className="min-h-screen bg-gradient-to-b from-background to-muted p-4">
+      <Card className="max-w-2xl mx-auto mt-8">
+        <CardContent className="p-6">
+          <div className="mb-4 h-2 bg-gray-200 rounded-full">
+            <div className="h-2 bg-blue-500 rounded-full" style={{ width: `${progress}%` }}></div>
+          </div>
+          <h2 className="text-lg font-bold mb-4">{currentQuestion.text}</h2>
+          <div className="space-y-2">
+            {currentQuestion.options.map((option, index) => (
+              <Button key={index} className="w-full" onClick={() => handleAnswer(option.score)}>
+                {option.text}
+              </Button>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 }
