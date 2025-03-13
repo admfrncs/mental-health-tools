@@ -1,157 +1,69 @@
-"use client";
-
-import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { questions, sectionDisplayNames, calculateSectionScores } from "src/lib/questions";
 import { Button } from "src/components/ui/button";
-import { Card, CardContent } from "src/components/ui/card";
-import { Calendar } from "src/components/ui/calendar";
-import { Popover, PopoverTrigger, PopoverContent } from "src/components/ui/popover";
-import { CalendarIcon } from "lucide-react";
-import { questions } from "src/lib/questions";
-import { toast } from "react-toastify";
-import { format, parse } from "date-fns";
 
 export default function MoodTracker() {
-  const router = useRouter();
-  const [date, setDate] = useState<string>(format(new Date(), "PPP"));
-  const [currentQuestion, setCurrentQuestion] = useState<number>(0);
-  const [responses, setResponses] = useState<number[]>(new Array(questions.length).fill(0));
-  const [showResults, setShowResults] = useState<boolean>(false);
-  const [results, setResults] = useState<{ sectionScores: number[]; overallScore: number } | null>(null);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [responses, setResponses] = useState<number[]>(Array(questions.length).fill(0));
+  const [completed, setCompleted] = useState(false);
 
-  // Assuming userId is available through context or props
-  const userId = "userId_placeholder"; // Replace with actual logic to get userId, e.g., from context or props
+  const handleAnswer = (score: number) => {
+    setResponses((prevResponses) => {
+      const updatedResponses = [...prevResponses];
+      updatedResponses[currentIndex] = score;
+      return updatedResponses;
+    });
 
-  useEffect(() => {
-    // On first load, check if there are stored responses from a previous session
-    const savedResponses = sessionStorage.getItem('responses');
-    const savedDate = sessionStorage.getItem('date');
-    if (savedResponses) {
-      setResponses(JSON.parse(savedResponses));
-    }
-    if (savedDate) {
-      setDate(savedDate);
-    }
-  }, []);
-
-  useEffect(() => {
-    // Save responses and date to sessionStorage whenever they change
-    sessionStorage.setItem('responses', JSON.stringify(responses));
-    sessionStorage.setItem('date', date);
-  }, [responses, date]);
-
-  const handleAnswer = async (answerId: number) => {
-    try {
-      const updatedResponses = [...responses];
-      updatedResponses[currentQuestion] = answerId;
-      setResponses(updatedResponses);
-
-      if (currentQuestion < questions.length - 1) {
-        setCurrentQuestion((prev) => prev + 1);
+    setCurrentIndex((prevIndex) => {
+      if (prevIndex < questions.length - 1) {
+        return prevIndex + 1;
       } else {
-        // Send responses to the API to calculate scores
-        const res = await fetch("/api/mood-assessments", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            userId,
-            responses: updatedResponses,
-            date,
-          }),
-        });
-
-        if (!res.ok) {
-          throw new Error("Failed to fetch the results");
-        }
-
-        const data = await res.json();
-        if (data.error) {
-          throw new Error(data.error);
-        }
-
-        setResults(data);
-        setShowResults(true);
+        setCompleted(true);
+        return prevIndex;
       }
-    } catch (error) {
-      console.error("Error submitting answer:", error);
-      toast.error("Failed to save response. Please try again.");
-    }
+    });
   };
 
-  const startNewAssessment = () => {
-    setCurrentQuestion(0);
-    setShowResults(false);
-    setResponses(new Array(questions.length).fill(0));
-    setDate(format(new Date(), "PPP"));
-    sessionStorage.clear(); // Clear sessionStorage when starting a new assessment
-    router.push("/");
-  };
+  if (completed) {
+    const sectionScores = calculateSectionScores(responses);
+    const totalScore = sectionScores.reduce((a, b) => a + b, 0);
+
+    return (
+      <div className="p-4">
+        <h2 className="text-xl font-bold">Results</h2>
+        <ul className="mt-2">
+          {sectionScores.map((score, index) => (
+            <li key={index} className="mt-2">
+              {sectionDisplayNames[index]}: {score}
+            </li>
+          ))}
+        </ul>
+        <p className="mt-4 font-bold">Total Score: {totalScore}</p>
+        <Button className="mt-4" onClick={() => {
+          setCurrentIndex(0);
+          setResponses(Array(questions.length).fill(0));
+          setCompleted(false);
+        }}>Restart</Button>
+      </div>
+    );
+  }
+
+  const currentQuestion = questions[currentIndex];
+  const progress = ((currentIndex + 1) / questions.length) * 100;
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background to-muted p-4">
-      <Card className="max-w-2xl mx-auto mt-8">
-        <CardContent className="p-6">
-          <div className="mb-6">
-            <h2 className="text-lg font-medium mb-2">Select Date</h2>
-            <Popover>
-              <PopoverTrigger asChild>
-                <Button variant="outline" className="flex items-center gap-2">
-                  <CalendarIcon className="w-4 h-4" />
-                  {date}
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="p-2">
-                <Calendar
-                  mode="single"
-                  selected={parse(date, "PPP", new Date())}
-                  onSelect={(newDate) => newDate && setDate(format(newDate, "PPP"))}
-                  initialFocus
-                  aria-label="Calendar"
-                />
-              </PopoverContent>
-            </Popover>
-          </div>
-
-          {!showResults ? (
-            <>
-              <h2 className="text-lg font-semibold mb-4">
-                {questions[currentQuestion]?.text}
-              </h2>
-              <ul>
-                {questions[currentQuestion]?.options.map((option, idx) => (
-                  <li key={idx}>
-                    <button
-                      onClick={() => handleAnswer(option.score)}
-                      className="text-blue-600 hover:underline"
-                    >
-                      {option.text}
-                    </button>
-                  </li>
-                ))}
-              </ul>
-            </>
-          ) : (
-            <div>
-              <h3 className="font-semibold">Section Scores</h3>
-              <ul>
-                {results?.sectionScores.map((score, index) => (
-                  <li key={index}>
-                    Section {index + 1}: {score}
-                  </li>
-                ))}
-              </ul>
-              <h3 className="font-semibold mt-4">Overall Score</h3>
-              <p>{results?.overallScore}</p>
-            </div>
-          )}
-
-          <div className="mt-8">
-            <Button onClick={startNewAssessment}>Start New Assessment</Button>
-          </div>
-        </CardContent>
-      </Card>
+    <div className="p-4">
+      <div className="mb-4 h-2 bg-gray-200 rounded-full">
+        <div className="h-2 bg-blue-500 rounded-full" style={{ width: `${progress}%` }}></div>
+      </div>
+      <h2 className="text-lg font-bold mb-2">{currentQuestion.text}</h2>
+      <div className="space-y-2">
+        {currentQuestion.options.map((option, index) => (
+          <Button key={index} className="w-full" onClick={() => handleAnswer(option.score)}>
+            {option.text}
+          </Button>
+        ))}
+      </div>
     </div>
   );
 }
