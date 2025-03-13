@@ -6,7 +6,14 @@ export type ToastProps = {
   type?: "success" | "error" | "info";
 };
 
-export const Toast = ({ message, type = "info", children }: ToastProps & { children?: React.ReactNode }) => {
+// Define the ToastActionElement type
+export type ToastActionElement = React.ReactNode;
+
+export const Toast = ({
+  message,
+  type = "info",
+  children,
+}: ToastProps & { children?: React.ReactNode }) => {
   return (
     <div
       className={cn(
