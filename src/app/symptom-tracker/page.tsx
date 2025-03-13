@@ -24,7 +24,7 @@ const SymptomTracker = () => {
   const [showResults, setShowResults] = useState(false);
 
   const saveMutation = useMutation({
-    mutationFn: async (data: any) => {
+    mutationFn: async (data: string) => {
       console.log("Saving data:", data);  // Debugging line
       return await apiRequest("POST", "/api/symptom-assessments", data);
     },

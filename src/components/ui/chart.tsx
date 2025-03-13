@@ -22,16 +22,6 @@ type ChartContextProps = {
 
 const ChartContext = React.createContext<ChartContextProps | null>(null);
 
-function useChart() {
-  const context = React.useContext(ChartContext);
-
-  if (!context) {
-    throw new Error("useChart must be used within a <ChartContainer />");
-  }
-
-  return context;
-}
-
 const ChartContainer = React.forwardRef<
   HTMLDivElement,
   React.ComponentProps<"div"> & {
@@ -97,3 +87,5 @@ const ChartStyle = ({ id, config }: { id: string; config: ChartConfig }) => {
     />
   );
 };
+
+export { ChartContainer };

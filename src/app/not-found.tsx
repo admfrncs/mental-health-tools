@@ -27,7 +27,7 @@ export default function NotFound() {
               </h1>
             </div>
             <p className="text-sm text-gray-600 mb-4">
-              The page you're looking for doesn't exist or may have been moved.
+              The page youre looking for doesnt exist or may have been moved.
             </p>
             {/* Use either button with onClick OR Next.js <Link> for better performance */}
             <button
