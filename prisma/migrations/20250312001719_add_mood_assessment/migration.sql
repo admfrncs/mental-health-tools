@@ -1,7 +1,0 @@
--- CreateTable
-CREATE TABLE "MoodAssessment" (
-    "id" TEXT NOT NULL PRIMARY KEY,
-    "mood" TEXT NOT NULL,
-    "score" INTEGER NOT NULL,
-    "date" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
-);
