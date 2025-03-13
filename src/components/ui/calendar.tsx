@@ -1,5 +1,5 @@
 import * as React from "react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, LucideProps } from "lucide-react";
 import { DayPicker, DayPickerProps } from "react-day-picker";
 
 import { cn } from "src/lib/utils"; // Corrected import path based on your alias
@@ -57,12 +57,13 @@ function Calendar({
         ...classNames, // Ensures any passed classNames are applied
       }}
       components={{
-        // Corrected Button implementation with 'next' and 'previous' props
+        // Corrected Button implementation with next/previous typing
         Button: ({ next, ...props }: CustomButtonProps) => {
+          const buttonProps: LucideProps = { ...props, className: "h-4 w-4" };
           return next ? (
-            <ChevronRight {...props} className="h-4 w-4" />
+            <ChevronRight {...buttonProps} />
           ) : (
-            <ChevronLeft {...props} className="h-4 w-4" />
+            <ChevronLeft {...buttonProps} />
           );
         },
       }}
