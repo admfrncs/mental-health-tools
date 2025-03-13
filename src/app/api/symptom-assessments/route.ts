@@ -1,9 +1,9 @@
 import { NextResponse } from "next/server";
-import { SymptomAssessment } from "src/lib/types"; // Removed SelectedSymptom since it's unused
+import { SymptomAssessment, SelectedSymptom } from "src/lib/type";
 import { v4 as uuidv4 } from "uuid";
 
 // Temporary in-memory storage (replace with a database in production)
-const savedAssessments: SymptomAssessment[] = []; // Changed let to const
+let savedAssessments: SymptomAssessment[] = [];
 
 export async function POST(req: Request) {
   try {
@@ -37,6 +37,7 @@ export async function POST(req: Request) {
     );
   }
 }
+
 
 /**
  * Handles GET requests to retrieve all saved symptom assessments.
