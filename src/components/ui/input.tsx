@@ -1,14 +1,8 @@
 import * as React from "react";
 import { cn } from "src/lib/utils";
 
-// Renamed the first function to CustomInput to avoid the conflict
-function CustomInput(props: React.InputHTMLAttributes<HTMLInputElement>) {
-  return <input {...props} />;
-}
-
-interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {}
-
-const Input = React.forwardRef<HTMLInputElement, InputProps>(
+// Removed CustomInput since it's not used and the interface is redundant
+const Input = React.forwardRef<HTMLInputElement, React.InputHTMLAttributes<HTMLInputElement>>(
   ({ className, type, ...props }, ref) => {
     return (
       <input
