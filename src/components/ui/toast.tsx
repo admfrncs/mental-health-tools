@@ -22,3 +22,4 @@ export const Toast = ({ message, type = "info" }: ToastProps) => {
     </div>
   );
 };
+
