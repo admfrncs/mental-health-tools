@@ -7,7 +7,7 @@ import { Card, CardContent } from "src/components/ui/card";
 import { Calendar } from "src/components/ui/calendar";
 import { Popover, PopoverTrigger, PopoverContent } from "src/components/ui/popover";
 import { CalendarIcon } from "lucide-react";
-import { questions } from "src/lib/questions";
+import { sections, sectionDisplayNames, questions } from "src/lib/questions";
 import { toast } from "react-toastify";
 import { format, parse } from "date-fns";
 
@@ -19,7 +19,7 @@ export default function MoodTracker() {
   const [showResults, setShowResults] = useState<boolean>(false);
   const [results, setResults] = useState<{ sectionScores: number[]; overallScore: number } | null>(null);
 
-  const userId = "userId_placeholder"; // Replace with actual logic to get userId
+  const userId = "userId_placeholder"; // Replace with actual userId logic
 
   useEffect(() => {
     console.log("Initialized Date:", date);
@@ -34,7 +34,7 @@ export default function MoodTracker() {
       if (currentQuestion < questions.length - 1) {
         setCurrentQuestion((prev) => prev + 1);
       } else {
-        // Send responses to the API for calculation
+        // Fetch the results from the API route
         const res = await fetch("/api/mood-assessments", {
           method: "POST",
           headers: {
@@ -48,7 +48,7 @@ export default function MoodTracker() {
         });
 
         if (!res.ok) {
-          throw new Error("Failed to figure out the results");
+          throw new Error("Failed to calculate results");
         }
 
         const data = await res.json();
@@ -101,14 +101,12 @@ export default function MoodTracker() {
 
           {!showResults ? (
             <>
-              <h2 className="text-lg font-semibold mb-4">
-                {questions[currentQuestion]?.text}
-              </h2>
+              <h2 className="text-lg font-semibold mb-4">{questions[currentQuestion]?.text}</h2>
               <ul>
                 {questions[currentQuestion]?.options.map((option, idx) => (
                   <li key={idx}>
                     <button
-                      onClick={() => handleAnswer(option.id)}
+                      onClick={() => handleAnswer(option.score)}
                       className="text-blue-600 hover:underline"
                     >
                       {option.text}
