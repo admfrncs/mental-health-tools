@@ -30,12 +30,11 @@ export default function MoodTracker() {
   const handleAnswer = async (answerId: number) => {
     try {
       const updatedResponses = [...responses];
-updatedResponses[currentQuestion] = answerId;
-setResponses(updatedResponses);
+      updatedResponses[currentQuestion] = answerId;
+      setResponses(updatedResponses);
 
-console.log("Updated Responses:", updatedResponses); // Log the updated responses before sending to API
+      console.log("Updated Responses:", updatedResponses); // Log the updated responses before sending to API
 
-  
       if (currentQuestion < questions.length - 1) {
         setCurrentQuestion((prev) => prev + 1);
       } else {
@@ -51,42 +50,19 @@ console.log("Updated Responses:", updatedResponses); // Log the updated response
             date,
           }),
         });
-  
+
         if (!res.ok) {
           throw new Error("Failed to figure out the results");
         }
-  
+
         const data = await res.json();
-  
+
         console.log("API Response:", data); // Log the response from the API
-  
-        if (data.error) {
-          throw new Error(data.error);
-        }
-  
-        setResults(data);
-        setShowResults(true);
-      }
-    } catch (error) {
-      console.error("Error submitting answer:", error);
-      toast.error("Failed to save response. Please try again.");
-    }
-  };
-  
 
-        // Handle error if the response is not successful
-        if (!res.ok) {
-          throw new Error("Failed to figure out the results");
-        }
-
-        const data = await res.json();
-
-        // Handle any error returned by the API
         if (data.error) {
           throw new Error(data.error);
         }
 
-        // Set the results state with the data from API
         setResults(data);
         setShowResults(true);
       }
@@ -161,7 +137,7 @@ console.log("Updated Responses:", updatedResponses); // Log the updated response
               <p>{results?.overallScore}</p>
             </div>
           )}
-          
+
           <div className="mt-8">
             <Button onClick={startNewAssessment}>Start New Assessment</Button>
           </div>
