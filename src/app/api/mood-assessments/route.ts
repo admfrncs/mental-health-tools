@@ -1,7 +1,13 @@
 // src/app/api/mood-assessments/route.ts
 import { NextResponse } from "next/server";
 import { prisma } from "src/lib/prisma";
+import { NextApiRequest, NextApiResponse } from 'next';
 
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+  if (req.method === 'POST') {
+    try {
+      const { userId, responses, date } = req.body;
+      
 // Function to calculate results based on the user's responses
 export async function POST(req: Request) {
   try {
