@@ -7,6 +7,11 @@ import { buttonVariants } from "src/components/ui/button"; // Corrected import p
 
 export type CalendarProps = DayPickerProps;
 
+// Extend the ButtonHTMLAttributes with 'next' prop
+type CustomButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
+  next?: boolean;
+};
+
 function Calendar({
   className,
   classNames,
@@ -52,8 +57,8 @@ function Calendar({
         ...classNames, // Ensures any passed classNames are applied
       }}
       components={{
-        // Corrected Button implementation with next/previous typing
-        Button: ({ next, ...props }: { next?: boolean }) => {
+        // Corrected Button implementation with 'next' and 'previous' props
+        Button: ({ next, ...props }: CustomButtonProps) => {
           return next ? (
             <ChevronRight {...props} className="h-4 w-4" />
           ) : (
