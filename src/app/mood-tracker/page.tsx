@@ -29,6 +29,30 @@ export default function MoodTracker() {
     });
   };
 
+  const exportToWord = () => {
+    const sectionScores = calculateSectionScores(responses);
+    const totalScore = sectionScores.reduce((a, b) => a + b, 0);
+
+    const content = `
+Mood Assessment Results
+Date: ${new Date().toLocaleDateString()}
+
+Section Scores:
+${sectionScores.map((score, index) => `${sectionDisplayNames[index]}: ${score}`).join("\n")}
+
+Total Score: ${totalScore}
+    `;
+
+    const blob = new Blob([content], { type: "application/msword" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = "mood-assessment.doc";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   if (completed) {
     const sectionScores = calculateSectionScores(responses);
     const totalScore = sectionScores.reduce((a, b) => a + b, 0);
@@ -48,6 +72,7 @@ export default function MoodTracker() {
             <p className="font-bold mb-4">Total Score: {totalScore}</p>
 
             <div className="flex gap-4">
+              <Button onClick={exportToWord}>Export to Word</Button>
               <Button variant="outline" onClick={() => router.push("/")}>
                 Start New Assessment
               </Button>
@@ -71,7 +96,11 @@ export default function MoodTracker() {
           <h2 className="text-lg font-bold mb-4">{currentQuestion.text}</h2>
           <div className="space-y-2">
             {currentQuestion.options.map((option, index) => (
-              <Button key={index} className="w-full" onClick={() => handleAnswer(option.score)}>
+              <Button 
+                key={index} 
+                className="w-full py-3 px-4 border rounded-md text-left bg-gray-100 hover:bg-gray-200"
+                onClick={() => handleAnswer(option.score)}
+              >
                 {option.text}
               </Button>
             ))}
