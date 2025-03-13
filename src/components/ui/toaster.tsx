@@ -1,7 +1,6 @@
 import { useToast } from "src/hooks/use-toast"; // Corrected import path based on your alias
 import {
   Toast,
-  ToastClose,
   ToastDescription,
   ToastProvider,
   ToastTitle,
