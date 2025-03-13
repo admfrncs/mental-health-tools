@@ -1,23 +1,23 @@
 import { NextResponse } from "next/server";
-import { SymptomAssessment, SelectedSymptom } from "src/lib/type";
+import { SymptomAssessment } from "src/lib/type"; // Removed unused SelectedSymptom import
 import { v4 as uuidv4 } from "uuid";
 
 // Temporary in-memory storage (replace with a database in production)
-let savedAssessments: SymptomAssessment[] = [];
+const savedAssessments: SymptomAssessment[] = []; // Changed let to const
 
 export async function POST(req: Request) {
   try {
-    const body = await req.json(); // Ensure correct parsing
-    console.log("Received data:", body); // Debugging log
+    const body = await req.json();
+    console.log("Received data:", body);
 
-    if (!body || !Array.isArray(body)) { // Validate input as an array
+    if (!body || !Array.isArray(body)) {
       return NextResponse.json({ error: "Invalid request data" }, { status: 400 });
     }
 
     const newAssessment: SymptomAssessment = {
       id: uuidv4(),
       date: new Date().toISOString(),
-      symptoms: body, // Store symptoms directly
+      symptoms: body,
     };
 
     savedAssessments.push(newAssessment);
@@ -38,10 +38,6 @@ export async function POST(req: Request) {
   }
 }
 
-
-/**
- * Handles GET requests to retrieve all saved symptom assessments.
- */
 export async function GET() {
   try {
     return NextResponse.json(savedAssessments, { status: 200 });
