@@ -1,3 +1,5 @@
+"use client";
+
 import { useState } from "react";
 import { questions, sectionDisplayNames, calculateSectionScores } from "src/lib/questions";
 import { Button } from "src/components/ui/button";
