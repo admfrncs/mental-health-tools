@@ -97,7 +97,6 @@ ${selectedSymptoms
       },
     });
   };
-  
 
   if (showResults) {
     return (
@@ -154,7 +153,7 @@ ${selectedSymptoms
                 <AccordionTrigger>{category.name}</AccordionTrigger>
                 <AccordionContent>
                   <div className="space-y-4">
-                    {category.symptoms.map((symptom) => {
+                    {category.symptoms.map((symptom: string) => {
                       const selected = selectedSymptoms.find(
                         (s) => s.category === category.name && s.symptom === symptom
                       );
