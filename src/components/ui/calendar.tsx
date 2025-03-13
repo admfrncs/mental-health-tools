@@ -1,11 +1,11 @@
 import * as React from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { DayPicker } from "react-day-picker";
+import { DayPicker, DayPickerProps } from "react-day-picker";
 
 import { cn } from "src/lib/utils"; // Corrected import path based on your alias
 import { buttonVariants } from "src/components/ui/button"; // Corrected import path based on your alias
 
-export type CalendarProps = React.ComponentProps<typeof DayPicker>;
+export type CalendarProps = DayPickerProps;
 
 function Calendar({
   className,
@@ -52,12 +52,14 @@ function Calendar({
         ...classNames, // Ensures any passed classNames are applied
       }}
       components={{
-        NavButton: ({ next, ...props }) =>
-          next ? (
+        // Corrected NavButton implementation
+        NavButton: ({ next, ...props }) => {
+          return next ? (
             <ChevronRight {...props} className="h-4 w-4" />
           ) : (
             <ChevronLeft {...props} className="h-4 w-4" />
-          ),
+          );
+        },
       }}
       {...props}
     />
