@@ -29,18 +29,18 @@ export default function MoodTracker() {
 
   const handleAnswer = async (answerId: number) => {
     try {
-      // Update responses array with the selected answer
       const updatedResponses = [...responses];
-      updatedResponses[currentQuestion] = answerId;
-      setResponses(updatedResponses);
+updatedResponses[currentQuestion] = answerId;
+setResponses(updatedResponses);
 
-      // Move to the next question or fetch results if it's the last question
+console.log("Updated Responses:", updatedResponses); // Log the updated responses before sending to API
+
+  
       if (currentQuestion < questions.length - 1) {
         setCurrentQuestion((prev) => prev + 1);
       } else {
         console.log("Fetching results...");
-        // Make API call to calculate results
-        const res = await fetch("api/mood-assessments", {
+        const res = await fetch("/api/mood-assessments", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -48,9 +48,31 @@ export default function MoodTracker() {
           body: JSON.stringify({
             userId,
             responses: updatedResponses,
-            date, // Passing date in case you want to track it
+            date,
           }),
         });
+  
+        if (!res.ok) {
+          throw new Error("Failed to figure out the results");
+        }
+  
+        const data = await res.json();
+  
+        console.log("API Response:", data); // Log the response from the API
+  
+        if (data.error) {
+          throw new Error(data.error);
+        }
+  
+        setResults(data);
+        setShowResults(true);
+      }
+    } catch (error) {
+      console.error("Error submitting answer:", error);
+      toast.error("Failed to save response. Please try again.");
+    }
+  };
+  
 
         // Handle error if the response is not successful
         if (!res.ok) {
