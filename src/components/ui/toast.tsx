@@ -6,7 +6,7 @@ export type ToastProps = {
   type?: "success" | "error" | "info";
 };
 
-export const Toast = ({ message, type = "info" }: ToastProps) => {
+export const Toast = ({ message, type = "info", children }: ToastProps & { children?: React.ReactNode }) => {
   return (
     <div
       className={cn(
@@ -18,8 +18,31 @@ export const Toast = ({ message, type = "info" }: ToastProps) => {
         }
       )}
     >
-      {message}
+      {children || message}
     </div>
   );
 };
 
+// Define other components (ToastClose, ToastTitle, etc.)
+
+export const ToastClose = ({ onClick }: { onClick?: () => void }) => (
+  <button onClick={onClick} className="absolute top-2 right-2 text-white">
+    X
+  </button>
+);
+
+export const ToastTitle = ({ children }: { children: React.ReactNode }) => (
+  <h4 className="font-bold text-lg">{children}</h4>
+);
+
+export const ToastDescription = ({ children }: { children: React.ReactNode }) => (
+  <p className="text-sm">{children}</p>
+);
+
+export const ToastProvider = ({ children }: { children: React.ReactNode }) => (
+  <div className="toast-provider">{children}</div>
+);
+
+export const ToastViewport = () => (
+  <div className="toast-viewport"></div>
+);
