@@ -1,4 +1,4 @@
-"use client"; // Add this line at the top
+"use client"; // Add this line at the top to indicate client-side code in Next.js
 
 import { useState } from "react";
 import { useRouter } from "next/navigation"; // Correct import for Next.js App Router
