@@ -7,7 +7,7 @@ import { Card, CardContent } from "src/components/ui/card";
 import { Calendar } from "src/components/ui/calendar";
 import { Popover, PopoverTrigger, PopoverContent } from "src/components/ui/popover";
 import { CalendarIcon } from "lucide-react";
-import { sections, sectionDisplayNames, questions } from "src/lib/questions";
+import { questions } from "src/lib/questions";
 import { toast } from "react-toastify";
 import { format, parse } from "date-fns";
 
@@ -19,11 +19,26 @@ export default function MoodTracker() {
   const [showResults, setShowResults] = useState<boolean>(false);
   const [results, setResults] = useState<{ sectionScores: number[]; overallScore: number } | null>(null);
 
-  const userId = "userId_placeholder"; // Replace with actual userId logic
+  // Assuming userId is available through context or props
+  const userId = "userId_placeholder"; // Replace with actual logic to get userId, e.g., from context or props
 
   useEffect(() => {
-    console.log("Initialized Date:", date);
-  }, [date]);
+    // On first load, check if there are stored responses from a previous session
+    const savedResponses = sessionStorage.getItem('responses');
+    const savedDate = sessionStorage.getItem('date');
+    if (savedResponses) {
+      setResponses(JSON.parse(savedResponses));
+    }
+    if (savedDate) {
+      setDate(savedDate);
+    }
+  }, []);
+
+  useEffect(() => {
+    // Save responses and date to sessionStorage whenever they change
+    sessionStorage.setItem('responses', JSON.stringify(responses));
+    sessionStorage.setItem('date', date);
+  }, [responses, date]);
 
   const handleAnswer = async (answerId: number) => {
     try {
@@ -34,7 +49,7 @@ export default function MoodTracker() {
       if (currentQuestion < questions.length - 1) {
         setCurrentQuestion((prev) => prev + 1);
       } else {
-        // Fetch the results from the API route
+        // Send responses to the API to calculate scores
         const res = await fetch("/api/mood-assessments", {
           method: "POST",
           headers: {
@@ -48,11 +63,10 @@ export default function MoodTracker() {
         });
 
         if (!res.ok) {
-          throw new Error("Failed to calculate results");
+          throw new Error("Failed to fetch the results");
         }
 
         const data = await res.json();
-
         if (data.error) {
           throw new Error(data.error);
         }
@@ -71,6 +85,7 @@ export default function MoodTracker() {
     setShowResults(false);
     setResponses(new Array(questions.length).fill(0));
     setDate(format(new Date(), "PPP"));
+    sessionStorage.clear(); // Clear sessionStorage when starting a new assessment
     router.push("/");
   };
 
@@ -101,7 +116,9 @@ export default function MoodTracker() {
 
           {!showResults ? (
             <>
-              <h2 className="text-lg font-semibold mb-4">{questions[currentQuestion]?.text}</h2>
+              <h2 className="text-lg font-semibold mb-4">
+                {questions[currentQuestion]?.text}
+              </h2>
               <ul>
                 {questions[currentQuestion]?.options.map((option, idx) => (
                   <li key={idx}>
