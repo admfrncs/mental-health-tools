@@ -1,4 +1,4 @@
-"use client"; // Add this line at the top to indicate client-side code in Next.js
+"use client"; // Add this line at the top
 
 import { useState } from "react";
 import { useRouter } from "next/navigation"; // Correct import for Next.js App Router
@@ -24,7 +24,7 @@ const SymptomTracker = () => {
   const [showResults, setShowResults] = useState(false);
 
   const saveMutation = useMutation({
-    mutationFn: async (data: string) => {
+    mutationFn: async (data: any) => {
       console.log("Saving data:", data);  // Debugging line
       return await apiRequest("POST", "/api/symptom-assessments", data);
     },
@@ -84,8 +84,7 @@ ${selectedSymptoms
   
     console.log("Sending data to API:", selectedSymptoms); // Debugging log
   
-    // Convert selectedSymptoms to a JSON string before sending to the mutation
-    saveMutation.mutate(JSON.stringify(selectedSymptoms), {
+    saveMutation.mutate(selectedSymptoms, {
       onSuccess: async (res) => {
         const data = await res.json(); // Convert response to JSON
         console.log("API response data:", data);
@@ -97,6 +96,9 @@ ${selectedSymptoms
       },
     });
   };
+  
+  
+  
 
   if (showResults) {
     return (
@@ -153,7 +155,7 @@ ${selectedSymptoms
                 <AccordionTrigger>{category.name}</AccordionTrigger>
                 <AccordionContent>
                   <div className="space-y-4">
-                    {category.symptoms.map((symptom: string) => {
+                    {category.symptoms.map((symptom) => {
                       const selected = selectedSymptoms.find(
                         (s) => s.category === category.name && s.symptom === symptom
                       );
