@@ -1,14 +1,14 @@
-"use client"; // Add this line at the top to indicate client-side code in Next.js
+"use client"; // Required for client-side execution
 
 import { useState } from "react";
-import { useRouter } from "next/navigation"; // Correct import for Next.js App Router
+import { useRouter } from "next/navigation";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "src/components/ui/accordion";
 import { Button } from "src/components/ui/button";
 import { Card, CardContent } from "src/components/ui/card";
 import { Checkbox } from "src/components/ui/checkbox";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "src/components/ui/select";
 import { symptomCategories, severityLevels } from "src/lib/symptoms";
-import { toast } from 'react-toastify';  // Correct import for react-toastify
+import { toast } from "react-toastify";
 import { useMutation } from "@tanstack/react-query";
 import { apiRequest } from "src/lib/queryClient";
 
@@ -19,37 +19,38 @@ type SelectedSymptom = {
 };
 
 const SymptomTracker = () => {
-  const router = useRouter(); // Using useRouter from next/navigation
+  const router = useRouter();
   const [selectedSymptoms, setSelectedSymptoms] = useState<SelectedSymptom[]>([]);
   const [showResults, setShowResults] = useState(false);
 
+  // Mutation for saving the assessment
   const saveMutation = useMutation({
-    mutationFn: async (data: string) => {
-      console.log("Saving data:", data);  // Debugging line
+    mutationFn: async (data: SelectedSymptom[]) => {
+      console.log("Saving data:", data); // Debugging log
       return await apiRequest("POST", "/api/symptom-assessments", data);
+    },
+    onSuccess: async (res) => {
+      console.log("API response received:", res);
+      setShowResults(true);
+    },
+    onError: (error) => {
+      console.error("API error:", error);
+      toast.error("An error occurred while saving the assessment.");
     },
   });
 
   const toggleSymptom = (category: string, symptom: string) => {
-    const exists = selectedSymptoms.find(
-      (s) => s.category === category && s.symptom === symptom
-    );
-
+    const exists = selectedSymptoms.find((s) => s.category === category && s.symptom === symptom);
     if (exists) {
       setSelectedSymptoms(selectedSymptoms.filter((s) => s !== exists));
     } else {
-      setSelectedSymptoms([
-        ...selectedSymptoms,
-        { category, symptom, severity: "Mild" },
-      ]);
+      setSelectedSymptoms([...selectedSymptoms, { category, symptom, severity: "Mild" }]);
     }
   };
 
   const updateSeverity = (symptom: SelectedSymptom, severity: string) => {
     setSelectedSymptoms(
-      selectedSymptoms.map((s) =>
-        s === symptom ? { ...s, severity } : s
-      )
+      selectedSymptoms.map((s) => (s === symptom ? { ...s, severity } : s))
     );
   };
 
@@ -59,11 +60,7 @@ Mental Health Symptom Assessment
 Date: ${new Date().toLocaleDateString()}
 
 Selected Symptoms:
-${selectedSymptoms
-  .map(
-    (s) => `${s.category}\n  - ${s.symptom} (Severity: ${s.severity})`
-  )
-  .join("\n")}
+${selectedSymptoms.map((s) => `${s.category}\n  - ${s.symptom} (Severity: ${s.severity})`).join("\n")}
     `;
 
     const blob = new Blob([content], { type: "application/msword" });
@@ -77,25 +74,16 @@ ${selectedSymptoms
   };
 
   const handleFinish = () => {
+    console.log("Complete Assessment button clicked!");
+
     if (selectedSymptoms.length === 0) {
       toast.error("Please select at least one symptom before completing the assessment.");
       return;
     }
-  
-    console.log("Sending data to API:", selectedSymptoms); // Debugging log
-  
-    // Convert selectedSymptoms to a JSON string before sending to the mutation
-    saveMutation.mutate(JSON.stringify(selectedSymptoms), {
-      onSuccess: async (res) => {
-        const data = await res.json(); // Convert response to JSON
-        console.log("API response data:", data);
-        setShowResults(true);
-      },
-      onError: (error) => {
-        console.error("API error:", error); // Log error details
-        toast.error("An error occurred while saving the assessment.");
-      },
-    });
+
+    console.log("Sending data to API:", selectedSymptoms);
+
+    saveMutation.mutate(selectedSymptoms);
   };
 
   if (showResults) {
@@ -106,9 +94,7 @@ ${selectedSymptoms
             <h2 className="text-2xl font-bold mb-6">Assessment Results</h2>
 
             {symptomCategories.map((category) => {
-              const categorySymptoms = selectedSymptoms.filter(
-                (s) => s.category === category.name
-              );
+              const categorySymptoms = selectedSymptoms.filter((s) => s.category === category.name);
 
               if (categorySymptoms.length === 0) return null;
 
@@ -154,26 +140,17 @@ ${selectedSymptoms
                 <AccordionContent>
                   <div className="space-y-4">
                     {category.symptoms.map((symptom: string) => {
-                      const selected = selectedSymptoms.find(
-                        (s) => s.category === category.name && s.symptom === symptom
-                      );
+                      const selected = selectedSymptoms.find((s) => s.category === category.name && s.symptom === symptom);
 
                       return (
                         <div key={symptom} className="flex items-center gap-4">
                           <Checkbox
                             checked={!!selected}
-                            onCheckedChange={() =>
-                              toggleSymptom(category.name, symptom)
-                            }
+                            onCheckedChange={() => toggleSymptom(category.name, symptom)}
                           />
                           <span className="flex-grow">{symptom}</span>
                           {selected && (
-                            <Select
-                              value={selected.severity}
-                              onValueChange={(value) =>
-                                updateSeverity(selected, value)
-                              }
-                            >
+                            <Select value={selected.severity} onValueChange={(value) => updateSeverity(selected, value)}>
                               <SelectTrigger className="w-[100px]">
                                 <SelectValue />
                               </SelectTrigger>
