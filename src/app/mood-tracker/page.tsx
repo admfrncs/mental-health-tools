@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "src/components/ui/button";
 import { Card, CardContent } from "src/components/ui/card";
-import { questions, sectionDisplayNames, calculateSectionScores, sections } from "src/lib/questions";
+import { questions, sectionDisplayNames, calculateSectionScores } from "src/lib/questions";
 
 export default function MoodTracker() {
   const router = useRouter();
@@ -83,31 +83,27 @@ Total Score: ${totalScore}
     );
   }
 
+  const currentQuestion = questions[currentIndex];
+  const progress = ((currentIndex + 1) / questions.length) * 100;
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-muted p-4">
       <Card className="max-w-2xl mx-auto mt-8">
         <CardContent className="p-6">
-          <h2 className="text-2xl font-bold mb-6">Mood Assessment</h2>
-          <div className="space-y-4">
-            {questions.map((question, index) => {
-              if (index === currentIndex) {
-                return (
-                  <div key={index}>
-                    <div className="text-lg font-medium mb-2">{question.text}</div>
-                    <div className="text-sm text-gray-500 mb-4">
-                      {sections[question.section]} {/* Citation will be displayed */}
-                    </div>
-                    <div className="space-y-2">
-                      {question.options.map((option, idx) => (
-                        <Button key={idx} onClick={() => handleAnswer(option.score)}>
-                          {option.text}
-                        </Button>
-                      ))}
-                    </div>
-                  </div>
-                );
-              }
-            })}
+          <div className="mb-4 h-2 bg-gray-200 rounded-full">
+            <div className="h-2 bg-blue-500 rounded-full" style={{ width: `${progress}%` }}></div>
+          </div>
+          <h2 className="text-lg font-bold mb-4">{currentQuestion.text}</h2>
+          <div className="space-y-2">
+            {currentQuestion.options.map((option, index) => (
+              <Button 
+                key={index} 
+                className="w-full py-3 px-4 border rounded-md text-left bg-gray-100 hover:bg-gray-200"
+                onClick={() => handleAnswer(option.score)}
+              >
+                {option.text}
+              </Button>
+            ))}
           </div>
         </CardContent>
       </Card>
