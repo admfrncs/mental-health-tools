@@ -1,6 +1,5 @@
 // src/app/wellness-assessment/route.ts
 import { NextResponse } from "next/server";
-import { questions, calculateSectionScores } from "src/lib/wellnesQuestions";
 
 export async function GET() {
   // You can handle any server-side logic here if needed
