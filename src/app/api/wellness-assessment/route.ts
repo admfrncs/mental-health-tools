@@ -9,7 +9,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Invalid responses format" }, { status: 400 });
     }
 
-    const sectionScores = calculateWellnessSectionScores(responses);
+    
     const totalScore = sectionScores.reduce((a, b) => a + b, 0);
 
     return NextResponse.json({ sectionScores, totalScore });
