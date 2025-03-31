@@ -84,7 +84,7 @@ export default function WellnessAssessment() {
             <div className="h-2 bg-blue-500 rounded-full" style={{ width: `${progress}%` }}></div>
           </div>
           <h3 className="text-lg font-bold mb-2">{sectionDisplayNames[currentQuestion.section]}</h3> 
-          <h3 className="text-xl font-semibold mb-2">{currentQuestion.title}</h3>
+          <h3 className="text-xl font-semibold mb-2">{(currentQuestion as { title: string }).title}</h3>
           <h2 className="text-lg font-bold mb-4">{currentQuestion.text}</h2>
           <div className="space-y-2">
             {currentQuestion.options.map((option, index) => (
