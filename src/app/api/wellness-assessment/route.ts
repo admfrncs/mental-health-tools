@@ -5,7 +5,7 @@ export async function POST(req: Request) {
   try {
     const { responses } = await req.json();
 
-    if (!Array.isArray(responses) || responses.length !== wellnessQuestions.length) {
+    if (!Array.isArray(responses) || responses.length !== questions.length) {
       return NextResponse.json({ error: "Invalid responses format" }, { status: 400 });
     }
 
