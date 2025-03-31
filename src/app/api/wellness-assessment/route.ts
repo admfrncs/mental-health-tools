@@ -1,20 +1,21 @@
-// src/app/wellness-assessment/route.ts
 import { NextResponse } from "next/server";
-import { wellnessQuestions, calculateWellnessSectionScores } from "src/lib/wellnessQuestions";
+import { questions, calculateSectionScores } from "src/lib/wellnessQuestions"; // Fixed the import
 
 export async function POST(req: Request) {
   try {
     const { responses } = await req.json();
 
-    if (!Array.isArray(responses) || responses.length !== wellnessQuestions.length) {
+    // Ensure the responses match the number of questions
+    if (!Array.isArray(responses) || responses.length !== questions.length) {
       return NextResponse.json({ error: "Invalid responses format" }, { status: 400 });
     }
 
-    const sectionScores = calculateWellnessSectionScores(responses);
+    // Calculate the section scores
+    const sectionScores = calculateSectionScores(responses);
     const totalScore = sectionScores.reduce((a, b) => a + b, 0);
 
     return NextResponse.json({ sectionScores, totalScore });
-  } catch {
+  } catch (error) {
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
   }
 }

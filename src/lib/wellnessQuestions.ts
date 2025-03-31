@@ -16,6 +16,7 @@ export const sections = [
 
 export interface Question {
   section: number;
+  title: string;
   text: string;
   options: { text: string; score: number }[];
 }
