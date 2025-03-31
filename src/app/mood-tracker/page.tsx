@@ -102,8 +102,8 @@ Total Score: ${totalScore}
             <p className="font-bold mb-4">Total Score: {totalScore}</p>
 
             <div className="flex gap-4">
-              <Button onClick={exportToWord}>Export to Word</Button>
-              <Button onClick={exportToCSV}>Export to Spreadsheet</Button>
+              <Button variant="outline"onClick={exportToWord}>Export Doc</Button>
+              <Button onClick={exportToCSV}>Export CSV</Button>
               <Button variant="outline" onClick={() => router.push("/")}>
                 Start New Assessment
               </Button>
