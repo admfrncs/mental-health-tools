@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation"; // Next.js router
 import Image from "next/image"; // Import Next.js Image component
 import { Button } from "src/components/ui/button";
 import { Card, CardContent } from "src/components/ui/card";
-import { Activity, Brain } from "lucide-react";
+import { Activity, Brain, Heart } from "lucide-react"; // Add Heart icon for Wellness Assessment
 
 export default function Home() {
   const router = useRouter(); // Next.js navigation
@@ -60,6 +60,23 @@ export default function Home() {
                 onClick={() => router.push("/symptom-tracker")} // Next.js navigation
               >
                 Start Symptom Assessment
+              </Button>
+            </CardContent>
+          </Card>
+
+          {/* Wellness Assessment Card */}
+          <Card className="p-6">
+            <CardContent className="space-y-4">
+              <Heart className="h-12 w-12 text-red-500" /> {/* Heart icon for wellness */}
+              <h2 className="text-2xl font-semibold">Wellness Assessment</h2>
+              <p className="text-muted-foreground">
+                Assess your overall wellness across multiple dimensions for a holistic view of your health.
+              </p>
+              <Button 
+                className="w-full bg-yellow-500 hover:bg-yellow-600 text-black" 
+                onClick={() => router.push("/wellness-assessment")} // Next.js navigation
+              >
+                Start Wellness Assessment
               </Button>
             </CardContent>
           </Card>
