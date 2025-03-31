@@ -5,7 +5,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "src/components/ui/button";
 import { Card, CardContent } from "src/components/ui/card";
-import { questions, sectionDisplayNames, calculateSectionScores } from "src/lib/wellnessQuestions.ts";
+import { questions, sectionDisplayNames, calculateSectionScores } from "src/lib/wellnessQuestions";
 
 export default function WellnessAssessment() {
   const router = useRouter();
@@ -84,17 +84,13 @@ export default function WellnessAssessment() {
           <div className="mb-4 h-2 bg-gray-200 rounded-full">
             <div className="h-2 bg-blue-500 rounded-full" style={{ width: `${progress}%` }}></div>
           </div>
-          <h2 className="text-lg font-bold mb-4">{currentQuestion.text}</h2>
-          <div className="space-y-2">
-            {currentQuestion.options.map((option, index) => (
-              <Button 
-                key={index} 
-                className="w-full py-3 px-4 border rounded-md text-left bg-gray-100 hover:bg-gray-200 text-black"
-                onClick={() => handleAnswer(option.score)}
-              >
-                {option.text}
-              </Button>
-            ))}
+          <h2 className="text-2xl font-bold mb-6">{currentQuestion.text}</h2>
+          <div className="flex gap-4 mb-6">
+            <Button onClick={() => handleAnswer(1)}>1</Button>
+            <Button onClick={() => handleAnswer(2)}>2</Button>
+            <Button onClick={() => handleAnswer(3)}>3</Button>
+            <Button onClick={() => handleAnswer(4)}>4</Button>
+            <Button onClick={() => handleAnswer(5)}>5</Button>
           </div>
         </CardContent>
       </Card>
