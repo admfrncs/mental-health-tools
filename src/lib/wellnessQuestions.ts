@@ -144,7 +144,7 @@ export const questions: Question[] = [
       text: "How would you describe your overall memory ability in daily life?",
       options: [
         { text: "I rarely forget things", score: 1 },
-        { text: "Sometimes forget things—", score: 2 },
+        { text: "Sometimes forget things", score: 2 },
         { text: "Frequently forget things", score: 3 },
         { text: "Often forget things", score: 4 }
       ]

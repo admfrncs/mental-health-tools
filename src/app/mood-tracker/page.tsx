@@ -52,7 +52,26 @@ Total Score: ${totalScore}
     link.click();
     document.body.removeChild(link);
   };
-
+  const exportToCSV = () => {
+    const sectionScores = calculateSectionScores(responses);
+    
+    let csvContent = "data:text/csv;charset=utf-8,Section,Score\n";
+    sectionScores.forEach((score, index) => {
+      csvContent += `${sectionDisplayNames[index]},${score}\n`;
+    });
+  
+    const totalScore = sectionScores.reduce((a, b) => a + b, 0);
+    csvContent += `Total Score,${totalScore}\n`;
+  
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.href = encodedUri;
+    link.download = "mood-assessment.csv";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+  
   if (completed) {
     const sectionScores = calculateSectionScores(responses);
     const totalScore = sectionScores.reduce((a, b) => a + b, 0);
@@ -73,6 +92,7 @@ Total Score: ${totalScore}
 
             <div className="flex gap-4">
               <Button onClick={exportToWord}>Export to Word</Button>
+              <Button onClick={exportToCSV}>Export to Spreadsheet</Button>
               <Button variant="outline" onClick={() => router.push("/")}>
                 Start New Assessment
               </Button>
@@ -106,7 +126,7 @@ Total Score: ${totalScore}
             ))}
           </div>
         </CardContent>
-      </Card>a
+      </Card>
     </div>
   );
 }
