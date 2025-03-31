@@ -5,7 +5,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "src/components/ui/button";
 import { Card, CardContent } from "src/components/ui/card";
-import { questions, sectionDisplayNames, calculateSectionScores } from "src/lib/wellnessQuestions";
+import { questions, sectionDisplayNames, calculateSectionScores } from "src/lib/wellnessQuestions.ts";
 
 export default function WellnessAssessment() {
   const router = useRouter();
