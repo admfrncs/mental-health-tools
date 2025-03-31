@@ -94,7 +94,7 @@ export default function WellnessAssessment() {
             <p className="font-bold mb-4">Total Score: {totalScore}</p>
 
             <div className="flex gap-4">
-              <Button variant="outline" onClick={exportToWord}>Export to Word</Button>
+              <Button variant="outline" onClick={exportToWord}>Export Doc</Button>
               <Button variant="outline" onClick={exportToCSV}>Export CSV</Button>
               <Button variant="outline" onClick={() => router.push("/")}>Start New Assessment</Button>
             </div>
