@@ -38,10 +38,10 @@ export const questions: Question[] = [
     text: "How frequently do you experience mood swings?",
     options: [
       { text: "None", score: 1 },
-      { text: "Mild (Occasionally noticeable)", score: 2 },
-      { text: "Moderate (Frequent but manageable)", score: 3 },
-      { text: "Severe (Interferes with daily life)", score: 4 },
-      { text: "Extreme (Significant distress or impairment)", score: 5 }
+      { text: "Mild", score: 2 },
+      { text: "Moderate", score: 3 },
+      { text: "Severe", score: 4 },
+      { text: "Extreme", score: 5 }
     ]
   },
   {
@@ -49,10 +49,10 @@ export const questions: Question[] = [
     text: "How would you rate your level of irritability/agitation?",
     options: [
       { text: "Not at all", score: 1 },
-      { text: "A little (Occasionally)", score: 2 },
-      { text: "Moderate (Noticeable, but manageable)", score: 3 },
-      { text: "Severe (Affects relationships/work)", score: 4 },
-      { text: "Extreme (Causes outbursts or major distress)", score: 5 }
+      { text: "A little", score: 2 },
+      { text: "Moderate", score: 3 },
+      { text: "Severe", score: 4 },
+      { text: "Extreme", score: 5 }
     ]
   },
   {
@@ -60,10 +60,10 @@ export const questions: Question[] = [
     text: "How would you describe your emotional numbness/detachment?",
     options: [
       { text: "Not at all", score: 1 },
-      { text: "Slightly (Occasionally feel disconnected)", score: 2 },
-      { text: "Moderately (Frequent difficulty feeling emotions)", score: 3 },
-      { text: "Severe (Feel mostly detached from life/others)", score: 4 },
-      { text: "Extreme (Completely disconnected from emotions or people)", score: 5 }
+      { text: "Slightly", score: 2 },
+      { text: "Moderately", score: 3 },
+      { text: "Severe", score: 4 },
+      { text: "Extreme", score: 5 }
     ]
   },
 
@@ -73,10 +73,10 @@ export const questions: Question[] = [
     text: "How would you rate your anxiety level?",
     options: [
       { text: "None", score: 1 },
-      { text: "Mild (Occasional nervousness)", score: 2 },
-      { text: "Moderate (Frequent worry, some physical symptoms)", score: 3 },
-      { text: "Severe (Persistent worry, physical symptoms interfere with life)", score: 4 },
-      { text: "Extreme (Panic attacks, constant distress)", score: 5 }
+      { text: "Mild", score: 2 },
+      { text: "Moderate", score: 3 },
+      { text: "Severe", score: 4 },
+      { text: "Extreme", score: 5 }
     ]
   },
   {
@@ -95,10 +95,10 @@ export const questions: Question[] = [
     text: "How would you rate your mental fog/forgetfulness?",
     options: [
       { text: "None", score: 1 },
-      { text: "Mild (Occasional forgetfulness)", score: 2 },
-      { text: "Moderate (Frequent lapses, affects focus)", score: 3 },
-      { text: "Severe (Major difficulty completing thoughts/tasks)", score: 4 },
-      { text: "Extreme (Inability to focus or remember)", score: 5 }
+      { text: "Mild", score: 2 },
+      { text: "Moderate", score: 3 },
+      { text: "Severe", score: 4 },
+      { text: "Extreme", score: 5 }
     ]
   },
   {
@@ -106,10 +106,10 @@ export const questions: Question[] = [
     text: "How often do you experience intrusive thoughts/paranoia?",
     options: [
       { text: "Never", score: 1 },
-      { text: "Rarely (Occasional thoughts)", score: 2 },
-      { text: "Sometimes (Recurring but manageable)", score: 3 },
-      { text: "Often (Distressing and intrusive)", score: 4 },
-      { text: "Constantly (Overwhelming and debilitating)", score: 5 }
+      { text: "Rarely", score: 2 },
+      { text: "Sometimes", score: 3 },
+      { text: "Often", score: 4 },
+      { text: "Constantly", score: 5 }
     ]
   },
 
@@ -119,10 +119,10 @@ export const questions: Question[] = [
     text: "How severe are your headaches/dizziness/lightheadedness?",
     options: [
       { text: "None", score: 1 },
-      { text: "Mild (Occasional discomfort)", score: 2 },
-      { text: "Moderate (Frequent, somewhat disruptive)", score: 3 },
-      { text: "Severe (Impacts daily activities)", score: 4 },
-      { text: "Extreme (Disabling)", score: 5 }
+      { text: "Mild", score: 2 },
+      { text: "Moderate", score: 3 },
+      { text: "Severe", score: 4 },
+      { text: "Extreme", score: 5 }
     ]
   },
   {
@@ -130,10 +130,10 @@ export const questions: Question[] = [
     text: "How often do you experience brain zaps?",
     options: [
       { text: "None", score: 1 },
-      { text: "Rarely (Brief, occasional)", score: 2 },
-      { text: "Sometimes (Moderate discomfort)", score: 3 },
-      { text: "Often (Strong, disrupting tasks)", score: 4 },
-      { text: "Constantly (Severe, unbearable)", score: 5 }
+      { text: "Rarely", score: 2 },
+      { text: "Sometimes", score: 3 },
+      { text: "Often", score: 4 },
+      { text: "Constantly", score: 5 }
     ]
   },
   {
@@ -141,10 +141,10 @@ export const questions: Question[] = [
     text: "How severe are your nausea/digestive issues/appetite changes?",
     options: [
       { text: "No issues", score: 1 },
-      { text: "Mild (Occasional discomfort)", score: 2 },
-      { text: "Moderate (Frequent but manageable)", score: 3 },
-      { text: "Severe (Regular distress, affects eating)", score: 4 },
-      { text: "Extreme (Severe pain, major appetite loss)", score: 5 }
+      { text: "Mild", score: 2 },
+      { text: "Moderate", score: 3 },
+      { text: "Severe", score: 4 },
+      { text: "Extreme", score: 5 }
     ]
   },
   {
@@ -152,10 +152,10 @@ export const questions: Question[] = [
     text: "How severe are your body aches/fatigue/flu-like symptoms?",
     options: [
       { text: "None", score: 1 },
-      { text: "Mild (Occasional discomfort)", score: 2 },
-      { text: "Moderate (Frequent aches, fatigue)", score: 3 },
-      { text: "Severe (Constant pain, interferes with tasks)", score: 4 },
-      { text: "Extreme (Disabling, bedridden)", score: 5 }
+      { text: "Mild", score: 2 },
+      { text: "Moderate", score: 3 },
+      { text: "Severe", score: 4 },
+      { text: "Extreme", score: 5 }
     ]
   },
 
@@ -211,10 +211,10 @@ export const questions: Question[] = [
     text: "How socially withdrawn do you feel?",
     options: [
       { text: "Not at all", score: 1 },
-      { text: "Mild (Occasionally prefer isolation)", score: 2 },
-      { text: "Moderate (Frequent social withdrawal)", score: 3 },
-      { text: "Severe (Avoid social situations completely)", score: 4 },
-      { text: "Extreme (Inability to leave the house or engage with others)", score: 5 }
+      { text: "Mild", score: 2 },
+      { text: "Moderate", score: 3 },
+      { text: "Severe", score: 4 },
+      { text: "Extreme", score: 5 }
     ]
   },
   {
