@@ -10,7 +10,7 @@ export async function POST(req: Request) {
     }
 
     
-    const totalScore = sectionScores.reduce((a, b) => a + b, 0);
+    
 
     return NextResponse.json({ sectionScores, totalScore });
   } catch (err) {
