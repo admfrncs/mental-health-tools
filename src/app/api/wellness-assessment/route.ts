@@ -1,12 +1,20 @@
 // src/app/wellness-assessment/route.ts
 import { NextResponse } from "next/server";
+import { wellnessQuestions, calculateWellnessSectionScores } from "src/lib/wellnessQuestions";
 
-export async function GET() {
-  // You can handle any server-side logic here if needed
-  return NextResponse.json({ message: "Wellness Assessment Route" });
-}
+export async function POST(req: Request) {
+  try {
+    const { responses } = await req.json();
 
-export async function POST() {
-  // Handle POST requests here if you need to store or process form submissions, etc.
-  return NextResponse.json({ message: "Submitted Wellness Assessment" });
+    if (!Array.isArray(responses) || responses.length !== wellnessQuestions.length) {
+      return NextResponse.json({ error: "Invalid responses format" }, { status: 400 });
+    }
+
+    const sectionScores = calculateWellnessSectionScores(responses);
+    const totalScore = sectionScores.reduce((a, b) => a + b, 0);
+
+    return NextResponse.json({ sectionScores, totalScore });
+  } catch {
+    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+  }
 }
