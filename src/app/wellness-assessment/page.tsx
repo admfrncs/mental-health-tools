@@ -44,6 +44,36 @@ export default function WellnessAssessment() {
     link.click();
     document.body.removeChild(link);
   };
+  const exportToCSV = () => {
+    const sectionScores = calculateSectionScores(responses);
+    const currentDate = new Date().toLocaleDateString(); // Get the current date
+  
+    let csvContent = "data:text/csv;charset=utf-8,";
+    
+    // Add the date row
+    csvContent += `Date,${currentDate}\n`;
+  
+    // Add column headers
+    csvContent += "Section,Score\n";
+  
+    // Add section scores
+    sectionScores.forEach((score, index) => {
+      csvContent += `${sectionDisplayNames[index]},${score}\n`;
+    });
+  
+    // Add total score
+    const totalScore = sectionScores.reduce((a, b) => a + b, 0);
+    csvContent += `Total Score,${totalScore}\n`;
+  
+    // Convert to downloadable CSV
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.href = encodedUri;
+    link.download = "mood-assessment.csv";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };  
 
   if (completed) {
     const sectionScores = calculateSectionScores(responses);
@@ -65,6 +95,7 @@ export default function WellnessAssessment() {
 
             <div className="flex gap-4">
               <Button variant="outline" onClick={exportToWord}>Export to Word</Button>
+              <Button variant="outline" onClick={exportToCSV}>Export CSV</Button>
               <Button variant="outline" onClick={() => router.push("/")}>Start New Assessment</Button>
             </div>
           </CardContent>
