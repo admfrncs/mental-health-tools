@@ -97,16 +97,16 @@ Total Score: ${totalScore}
           <div className="space-y-2">
             {currentQuestion.options.map((option, index) => (
               <Button 
-                key={index} 
-                className="w-full py-3 px-4 border rounded-md text-left bg-gray-100 hover:bg-gray-200"
-                onClick={() => handleAnswer(option.score)}
+              key={index} 
+              className="w-full py-3 px-4 border rounded-md text-left bg-gray-100 hover:bg-gray-200 text-black"
+              onClick={() => handleAnswer(option.score)}
               >
                 {option.text}
               </Button>
             ))}
           </div>
         </CardContent>
-      </Card>
+      </Card>a
     </div>
   );
 }
