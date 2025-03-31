@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { Button } from "src/components/ui/button";
 import { Card, CardContent } from "src/components/ui/card";
 import { questions, sectionDisplayNames, calculateSectionScores } from "src/lib/wellnessQuestions";
-import { questions, sections } from './wellnessQuestions'; // Adjust path if needed
+import { questions, sections } from 'src/lib/wellnessQuestions'; // Adjust path if needed
 
 export default function WellnessAssessment() {
   const router = useRouter();
