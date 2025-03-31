@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-
+import { questions } from "src/lib/wellnessQuestions";
 
 export async function POST(req: Request) {
   try {
