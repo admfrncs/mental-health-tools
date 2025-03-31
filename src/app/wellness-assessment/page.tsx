@@ -69,7 +69,7 @@ export default function WellnessAssessment() {
     const encodedUri = encodeURI(csvContent);
     const link = document.createElement("a");
     link.href = encodedUri;
-    link.download = "mood-assessment.csv";
+    link.download = "wellness-assessment.csv";
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
