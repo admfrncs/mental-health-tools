@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { Button } from "src/components/ui/button";
 import { Card, CardContent } from "src/components/ui/card";
 import { questions, sectionDisplayNames, calculateSectionScores } from "src/lib/wellnessQuestions";
+import { questions, sections } from './wellnessQuestions'; // Adjust path if needed
 
 export default function WellnessAssessment() {
   const router = useRouter();
@@ -83,6 +84,7 @@ export default function WellnessAssessment() {
           <div className="mb-4 h-2 bg-gray-200 rounded-full">
             <div className="h-2 bg-blue-500 rounded-full" style={{ width: `${progress}%` }}></div>
           </div>
+          <h3 className="text-lg font-bold mb-2">{sections[currentQuestion.section]}</h3> 
           <h3 className="text-xl font-semibold mb-2">{currentQuestion.title}</h3>
           <h2 className="text-lg font-bold mb-4">{currentQuestion.text}</h2>
           <div className="space-y-2">
