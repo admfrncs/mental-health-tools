@@ -1,6 +1,6 @@
 // src/app/wellness-assessment/route.ts
 import { NextResponse } from "next/server";
-import WellnessAssessment from "src/app/wellness-assessment/page"; // Adjust the import path if needed
+import { questions, calculateSectionScores } from "src/lib/wellnesQuestions";
 
 export async function GET() {
   // You can handle any server-side logic here if needed
