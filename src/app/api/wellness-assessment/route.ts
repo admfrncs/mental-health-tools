@@ -1,5 +1,11 @@
 import { NextResponse } from "next/server";
-import { sectionDisplayNames , calculateSectionScores } from "src/lib/wellnessQuestions";
+import { 
+  sectionDisplayNames, 
+  sections, 
+  questions, 
+  calculateSectionScores, 
+  getScoreRating 
+} from "src/lib/wellnessQuestions";
 
 export async function POST(req: Request) {
   try {
