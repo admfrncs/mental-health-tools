@@ -131,7 +131,7 @@ export const questions: Question[] =
       { "text": "Very well", "score": 1 }, 
       { "text": "Somewhat well", "score": 2 }, 
       { "text": "Poorly", "score": 3 }, 
-      { "text": "I struggle with this" "score": 4 }, 
+      { "text": "I struggle with this", "score": 4 }, 
       { "text": "Not at all ", "score": 5 } 
     ] 
   }, 
