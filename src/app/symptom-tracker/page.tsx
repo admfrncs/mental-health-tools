@@ -107,7 +107,7 @@ ${selectedSymptoms.map((s) => `${s.category}\n  - ${s.symptom} (Severity: ${s.se
                 </div>
               );
             })}
-            <div className="flex gap-4 mt-8">
+            <div className="flex flex-col gap-4 mt-8">
               <Button variant="outline" onClick={exportToWord}>Export to Document</Button>
               <Button variant="outline" onClick={() => router.push("/")}>Start New Assessment</Button>
             </div>
