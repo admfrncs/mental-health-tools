@@ -19,7 +19,7 @@ export default function Home() {
           alt="Mental Health Tool Shop Logo" 
           width={300} // Doubled size 
           height={300} 
-          className="mx-auto mb-6" // Center logo and add spacing below
+          className="mx-auto mb-2" // Center logo and add spacing below
           priority 
         />
 
