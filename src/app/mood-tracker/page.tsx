@@ -101,7 +101,7 @@ Total Score: ${totalScore}
             </ul>
             <p className="font-bold mb-4">Total Score: {totalScore}</p>
 
-            <div className="flex gap-4">
+            <div className="flex flex-col gap-4">
               <Button variant="outline" onClick={exportToWord}>Export Doc</Button>
               <Button variant="outline" onClick={exportToCSV}>Export CSV</Button>
               <Button variant="outline" onClick={() => router.push("/")}>
